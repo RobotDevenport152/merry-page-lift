@@ -40,6 +40,14 @@ const REVIEWS = [
 export default function HeroSection() {
   const { t, locale, fp, currency, addToCart } = useApp();
   const [quizOpen, setQuizOpen] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubscribed(true);
+    setEmailInput('');
+  };
   const { data: featuredProducts } = useFeaturedProducts();
 
   return (
@@ -286,6 +294,43 @@ export default function HeroSection() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Email Subscription */}
+      <section className="py-20 bg-gold/10 border-y border-gold/20">
+        <div className="container mx-auto px-6 text-center max-w-xl">
+          <span className="text-gold text-xs tracking-[0.3em] uppercase font-body">Newsletter</span>
+          <h2 className="font-display text-3xl md:text-4xl mt-4 mb-3">
+            {locale === 'zh' ? '抢先获得新品资讯' : 'First to Know, First to Get'}
+          </h2>
+          <p className="text-muted-foreground font-body text-sm mb-8">
+            {locale === 'zh'
+              ? '加入 12,000+ 位订阅者，第一时间获取新品发布与农场故事'
+              : 'Join 12,000+ subscribers for new arrivals and grower stories'}
+          </p>
+          <form onSubmit={handleSubscribe} className="flex gap-2 max-w-sm mx-auto">
+            <input
+              type="email"
+              value={emailInput}
+              onChange={e => setEmailInput(e.target.value)}
+              placeholder={locale === 'zh' ? '您的电子邮箱' : 'Your email address'}
+              className="flex-1 px-4 py-3 border border-border rounded-sm bg-background font-body text-sm focus:outline-none focus:border-gold transition-colors"
+              required
+            />
+            <button
+              type="submit"
+              disabled={subscribed}
+              className="px-6 py-3 bg-accent text-accent-foreground font-body font-semibold rounded-sm hover:bg-accent/90 transition-colors disabled:opacity-70 whitespace-nowrap"
+            >
+              {subscribed
+                ? (locale === 'zh' ? '✓ 已订阅' : '✓ Subscribed')
+                : (locale === 'zh' ? '订阅' : 'Subscribe')}
+            </button>
+          </form>
+          <p className="text-xs text-muted-foreground font-body mt-3">
+            {locale === 'zh' ? '不发垃圾邮件，随时可退订。' : 'No spam. Unsubscribe anytime.'}
+          </p>
         </div>
       </section>
 

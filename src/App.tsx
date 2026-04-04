@@ -25,6 +25,8 @@ const ResetPassword = React.lazy(() => import("./pages/ResetPassword"));
 const MyOrders = React.lazy(() => import("./pages/MyOrders"));
 const Compare = React.lazy(() => import("./pages/Compare"));
 const Returns = React.lazy(() => import("./pages/Returns"));
+const GrowerBatches = React.lazy(() => import("./pages/GrowerBatches"));
+const GrowerCredits = React.lazy(() => import("./pages/GrowerCredits"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -67,6 +69,8 @@ const App = () => (
               <Route path="/my-orders" element={<MyOrders />} />
               <Route path="/compare" element={<Compare />} />
               <Route path="/returns" element={<Returns />} />
+              <Route path="/grower/batches" element={<GrowerBatches />} />
+              <Route path="/grower/credits" element={<GrowerCredits />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

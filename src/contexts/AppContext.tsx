@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { type Locale, translations, type TranslationKey } from '@/lib/i18n';
 import { type Currency, type CartItem, type Product, PROMO_CODES, formatPrice } from '@/lib/store';
 
@@ -21,6 +21,8 @@ interface AppContextType {
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
   fp: (amount: number) => string;
+  recentlyViewed: string[];
+  addRecentlyViewed: (id: string) => void;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -32,6 +34,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [promoCode, setPromoCode] = useState('');
   const [promoDiscount, setPromoDiscount] = useState(0);
   const [cartOpen, setCartOpen] = useState(false);
+  const [recentlyViewed, setRecentlyViewed] = useState<string[]>(() => {
+    try {
+      const stored = localStorage.getItem('pa-recently-viewed');
+      return stored ? JSON.parse(stored).slice(0, 6) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const t = translations[locale];
 
@@ -82,12 +92,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const fp = useCallback((amount: number) => formatPrice(amount, currency), [currency]);
 
+  const addRecentlyViewed = useCallback((id: string) => {
+    setRecentlyViewed(prev => {
+      const deduped = [id, ...prev.filter(i => i !== id)].slice(0, 6);
+      return deduped;
+    });
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('pa-recently-viewed', JSON.stringify(recentlyViewed));
+  }, [recentlyViewed]);
+
   return (
     <AppContext.Provider value={{
       locale, setLocale, t, currency, setCurrency,
       cart, addToCart, removeFromCart, updateQuantity,
       cartTotal, cartCount, promoCode, setPromoCode,
       promoDiscount, applyPromo, cartOpen, setCartOpen, fp,
+      recentlyViewed, addRecentlyViewed,
     }}>
       {children}
     </AppContext.Provider>
