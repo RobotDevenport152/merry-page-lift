@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Calendar, Scissors, Droplets, Wind, Sparkles, ShieldCheck, Package, Search, Share2, Copy, Check } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const PROCESS_STEPS = [
   { icon: Scissors, labelZh: '剪获', labelEn: 'Shearing', descZh: '每年只剪一次，确保纤维最佳长度', descEn: 'Once a year for optimal fiber length' },
@@ -16,11 +17,16 @@ const PROCESS_STEPS = [
   { icon: Package, labelZh: '成品', labelEn: 'Finished', descZh: '丝光、碳化精制', descEn: 'Mercerizing and carbonizing' },
 ];
 
-const MOCK_BATCHES = [
-  { code: 'PA-2025-001', farm: 'Canterbury Hills Farm', region: 'Canterbury', date: '2025-01-15', weight: 45.2, micron: 22.5, grade: 'A+', status: 'ready' },
-  { code: 'PA-2025-002', farm: 'Waikato Valley Farm', region: 'Waikato', date: '2025-02-10', weight: 38.0, micron: 23.1, grade: 'A', status: 'combed' },
-  { code: 'PA-2025-003', farm: 'Southland Heritage Farm', region: 'Southland', date: '2025-03-01', weight: 52.8, micron: 21.8, grade: 'A+', status: 'scoured' },
-];
+interface BatchResult {
+  code: string;
+  farm: string;
+  region: string;
+  date: string;
+  weight: number;
+  micron: number;
+  grade: string;
+  status: string;
+}
 
 const STATUS_MAP: Record<string, number> = { raw: 0, scoured: 1, combed: 2, ready: 5 };
 
@@ -29,15 +35,58 @@ export default function TraceabilityPage() {
   const [urlParams] = useSearchParams();
   const initialCode = urlParams.get('code') || '';
   const [searchCode, setSearchCode] = useState(initialCode);
-  const [selectedBatch, setSelectedBatch] = useState<typeof MOCK_BATCHES[0] | null>(
-    initialCode ? MOCK_BATCHES.find(b => b.code.toLowerCase() === initialCode.toLowerCase()) || null : null
-  );
+  const [selectedBatch, setSelectedBatch] = useState<BatchResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [searching, setSearching] = useState(false);
 
-  const handleSearch = () => {
-    const found = MOCK_BATCHES.find(b => b.code.toLowerCase() === searchCode.toLowerCase());
-    setSelectedBatch(found || null);
-    if (!found) toast.error(locale === 'zh' ? '未找到该批次，请检查编号是否正确' : 'Batch not found. Please check the code.');
+  // Auto-search on mount if code provided
+  useState(() => {
+    if (initialCode) {
+      (async () => {
+        const { data } = await supabase
+          .from('fiber_batches')
+          .select('*')
+          .ilike('batch_code', initialCode)
+          .maybeSingle();
+        if (data) {
+          setSelectedBatch({
+            code: data.batch_code,
+            farm: data.farm_name,
+            region: data.region,
+            date: data.shearing_date || data.created_at,
+            weight: Number(data.weight_kg) || 0,
+            micron: Number(data.micron_measurement) || 0,
+            grade: data.fiber_grade || 'N/A',
+            status: data.status || 'raw',
+          });
+        }
+      })();
+    }
+  });
+
+  const handleSearch = async () => {
+    setSearching(true);
+    const { data } = await supabase
+      .from('fiber_batches')
+      .select('*')
+      .ilike('batch_code', searchCode.trim())
+      .maybeSingle();
+    setSearching(false);
+    if (data) {
+      setSelectedBatch({
+        code: data.batch_code,
+        farm: data.farm_name,
+        region: data.region,
+        date: data.shearing_date || data.created_at,
+        weight: Number(data.weight_kg) || 0,
+        micron: Number(data.micron_measurement) || 0,
+        grade: data.fiber_grade || 'N/A',
+        status: data.status || 'raw',
+      });
+    } else {
+      setSelectedBatch(null);
+      toast.error(locale === 'zh' ? '未找到该批次，请检查编号是否正确' : 'Batch not found. Please check the code.');
+    }
   };
 
   const handleShare = (batch: typeof MOCK_BATCHES[0]) => {
