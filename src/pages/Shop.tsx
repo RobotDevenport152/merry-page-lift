@@ -10,7 +10,7 @@ import SEOHead from '@/components/SEOHead';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-type Category = 'all' | 'duvet' | 'pillow' | 'blanket' | 'topper' | 'fiber' | 'bedding' | 'outerwear' | 'accessories';
+type Category = 'all' | 'newborn' | 'duvet' | 'apparel' | 'vest' | 'scarf' | 'sweater';
 type SortKey = 'featured' | 'priceLow' | 'priceHigh' | 'name';
 
 export default function ShopPage() {
@@ -58,10 +58,12 @@ export default function ShopPage() {
 
   const categories: { key: Category; label: string }[] = [
     { key: 'all', label: t.products.filter.all },
-    { key: 'duvet', label: locale === 'zh' ? '被子' : 'Duvets' },
-    { key: 'pillow', label: locale === 'zh' ? '枕头' : 'Pillows' },
-    { key: 'blanket', label: locale === 'zh' ? '毛毯' : 'Blankets' },
-    { key: 'fiber', label: locale === 'zh' ? '原纤维' : 'Raw Fiber' },
+    { key: 'newborn', label: locale === 'zh' ? '初生系列' : 'Newborn' },
+    { key: 'duvet', label: locale === 'zh' ? '羊驼被' : 'Duvets' },
+    { key: 'apparel', label: locale === 'zh' ? '大衣' : 'Coats' },
+    { key: 'vest', label: locale === 'zh' ? '马甲' : 'Vests' },
+    { key: 'scarf', label: locale === 'zh' ? '围巾' : 'Scarves' },
+    { key: 'sweater', label: locale === 'zh' ? '毛衣' : 'Sweaters' },
   ];
 
   const sorts: { key: SortKey; label: string }[] = [

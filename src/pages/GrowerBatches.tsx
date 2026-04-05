@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useNavigate, NavLink, Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { NavLink } from '@/components/NavLink';
 import { useQuery } from '@tanstack/react-query';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/hooks/useAuth';
@@ -64,7 +65,14 @@ export default function GrowerBatchesPage() {
         .eq('grower_user_id', user!.id)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data as Batch[];
+      return (data ?? []).map((d: any) => ({
+        batch_code: d.batch_code,
+        created_at: d.created_at,
+        weight_kg: d.weight_kg ?? 0,
+        grade: d.fiber_grade ?? 'N/A',
+        status: d.status ?? 'received',
+        payout_nzd: d.payout ?? 0,
+      })) as Batch[];
     },
     enabled: !!user,
   });
