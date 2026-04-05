@@ -61,7 +61,7 @@ export default function TraceabilityPage() {
         }
       })();
     }
-  });
+  }, [initialCode]);
 
   const handleSearch = async () => {
     setSearching(true);
