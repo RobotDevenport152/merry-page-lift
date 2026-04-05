@@ -238,24 +238,17 @@ export default function TraceabilityPage() {
             </div>
           )}
 
-          {/* All Batches */}
+          {/* Sample batch codes */}
           <div className="max-w-3xl mx-auto">
-            <h3 className="font-display text-xl mb-4">{locale === 'zh' ? '最新批次记录' : 'Recent Batches'}</h3>
-            <div className="space-y-3">
-              {MOCK_BATCHES.map(batch => (
+            <h3 className="font-display text-xl mb-4">{locale === 'zh' ? '示例溯源批次' : 'Sample Batch Codes'}</h3>
+            <div className="flex flex-wrap gap-2">
+              {['PA-2025-001','PA-2025-003','PA-2025-005','PA-2025-009','PA-2025-015'].map(code => (
                 <button
-                  key={batch.code}
-                  onClick={() => { setSearchCode(batch.code); setSelectedBatch(batch); }}
-                  className="w-full text-left bg-card rounded-lg border border-border p-4 hover:border-gold/30 transition-colors flex items-center justify-between"
+                  key={code}
+                  onClick={() => { setSearchCode(code); }}
+                  className="px-3 py-1.5 text-xs font-mono bg-card border border-border rounded hover:border-gold/30 transition-colors"
                 >
-                  <div>
-                    <p className="font-mono text-sm font-semibold">{batch.code}</p>
-                    <p className="text-xs text-muted-foreground font-body">{batch.farm} · {batch.region}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-body">{batch.weight}kg · {batch.micron}μm</p>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800 capitalize">{batch.status}</span>
-                  </div>
+                  {code}
                 </button>
               ))}
             </div>
