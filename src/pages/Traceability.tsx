@@ -89,7 +89,7 @@ export default function TraceabilityPage() {
     }
   };
 
-  const handleShare = (batch: typeof MOCK_BATCHES[0]) => {
+  const handleShare = (batch: BatchResult) => {
     const shareText = locale === 'zh'
       ? `我的太平洋羊驼被来自新西兰${batch.region}的 ${batch.farm}，这批纤维于${batch.date}剪获，微米数${batch.micron}μm，等级${batch.grade}。`
       : `My Pacific Alpacas duvet comes from ${batch.farm} in ${batch.region}, NZ. Fiber sheared ${batch.date}, ${batch.micron}μm, Grade ${batch.grade}.`;
