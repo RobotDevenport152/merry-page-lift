@@ -10,7 +10,7 @@ import SEOHead from '@/components/SEOHead';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-type Category = 'all' | 'duvet' | 'pillow' | 'blanket' | 'topper' | 'fiber' | 'bedding' | 'outerwear' | 'accessories';
+type Category = 'all' | 'newborn' | 'duvet' | 'apparel' | 'vest' | 'scarf' | 'sweater';
 type SortKey = 'featured' | 'priceLow' | 'priceHigh' | 'name';
 
 export default function ShopPage() {
