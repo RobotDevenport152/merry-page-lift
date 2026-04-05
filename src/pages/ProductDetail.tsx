@@ -28,12 +28,6 @@ const COMPARISON = [
   { key: '抗静电', keyEn: 'Anti-static', alpaca: '★★★★★', wool: '★☆☆☆☆', silk: '★★★☆☆' },
 ];
 
-const MOCK_REVIEWS = [
-  { id: '1', author: '张女士 / Ms. Zhang', rating: 5, date: '2025-03-10', textZh: '非常轻盈，比想象中更柔软。温控效果很好，不像羽绒被那样感觉闷热。强烈推荐！', textEn: 'Incredibly light and softer than expected. Temperature regulation is excellent — no stuffy feeling like down. Highly recommend!', verified: true, productVariant: '220×240cm' },
-  { id: '2', author: '王先生 / Mr. Wang', rating: 5, date: '2025-02-28', textZh: '作为礼物送给父母，他们用了一周就说"终于睡好了"。包装精美，有溯源证书，仪式感很强。', textEn: 'Bought as a gift for my parents. One week in and they said "finally sleeping well." Beautiful packaging with the traceability certificate.', verified: true, productVariant: '200×230cm' },
-  { id: '3', author: '李女士 / Ms. Li', rating: 4, date: '2025-01-15', textZh: '质量很好，填充均匀，面料很细腻。唯一美中不足是颜色比图片略偏米白。', textEn: 'Great quality, even fill, fine fabric. Only minor note: the color is slightly more off-white than in the photos.', verified: true, productVariant: '200×230cm' },
-];
-
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { locale, fp, currency, addToCart, t, recentlyViewed, addRecentlyViewed } = useApp();
@@ -43,6 +37,18 @@ export default function ProductDetailPage() {
   const [activeTab, setActiveTab] = useState<'description' | 'specs' | 'care' | 'reviews'>('description');
   const { data: product, isLoading } = useProduct(id || '');
   const { data: allProducts } = useProducts();
+  const [dbReviews, setDbReviews] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!id) return;
+    supabase
+      .from('product_reviews')
+      .select('*')
+      .eq('product_id', id)
+      .order('helpful_count', { ascending: false })
+      .limit(20)
+      .then(({ data }) => { if (data) setDbReviews(data); });
+  }, [id]);
 
   useEffect(() => {
     if (product) {
