@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
