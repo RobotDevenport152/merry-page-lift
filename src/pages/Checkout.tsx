@@ -5,17 +5,21 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import { motion } from 'framer-motion';
-import { Check, Lock } from 'lucide-react';
+import { Check, Lock, Tag } from 'lucide-react';
 import { toast } from 'sonner';
 
 type Step = 'info' | 'payment' | 'confirm';
 
 export default function CheckoutPage() {
-  const { locale, cart, fp, cartTotal, promoDiscount, promoCode, currency, t } = useApp();
+  const { locale, cart, fp, cartTotal, promoDiscount, promoCode, currency, t, setPromoCode } = useApp();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>('info');
   const [submitting, setSubmitting] = useState(false);
+  const [dbPromoInput, setDbPromoInput] = useState('');
+  const [dbPromoDiscount, setDbPromoDiscount] = useState(0);
+  const [dbPromoError, setDbPromoError] = useState('');
+  const [dbPromoApplied, setDbPromoApplied] = useState('');
 
   const [form, setForm] = useState({
     name: '', email: '', phone: '',
@@ -26,7 +30,43 @@ export default function CheckoutPage() {
   });
 
   const shipping = cartTotal >= 500 ? 0 : 25;
-  const total = cartTotal - promoDiscount + shipping;
+  const effectiveDiscount = dbPromoDiscount > 0 ? dbPromoDiscount : promoDiscount;
+  const total = cartTotal - effectiveDiscount + shipping;
+
+  const handleApplyDbPromo = async () => {
+    const code = dbPromoInput.trim().toUpperCase();
+    if (!code) return;
+    const { data } = await supabase
+      .from('promo_codes')
+      .select('*')
+      .eq('code', code)
+      .eq('is_active', true)
+      .maybeSingle();
+
+    if (!data) {
+      setDbPromoError(locale === 'zh' ? '无效促销码' : 'Invalid promo code');
+      return;
+    }
+    if (data.valid_until && new Date(data.valid_until) < new Date()) {
+      setDbPromoError(locale === 'zh' ? '促销码已过期' : 'Promo code expired');
+      return;
+    }
+    if (data.uses_count >= data.max_uses) {
+      setDbPromoError(locale === 'zh' ? '促销码已用完' : 'Promo code fully redeemed');
+      return;
+    }
+    if (data.min_amount && cartTotal < Number(data.min_amount)) {
+      setDbPromoError(locale === 'zh' ? `最低消费 ${fp(Number(data.min_amount))}` : `Minimum spend ${fp(Number(data.min_amount))}`);
+      return;
+    }
+
+    const discount = data.discount_type === 'percent'
+      ? cartTotal * Number(data.discount_value) / 100
+      : Number(data.discount_value);
+    setDbPromoDiscount(discount);
+    setDbPromoApplied(code);
+    setDbPromoError('');
+  };
 
   const steps: { key: Step; labelZh: string; labelEn: string }[] = [
     { key: 'info', labelZh: '收货信息', labelEn: 'Shipping' },
