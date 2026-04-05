@@ -27,6 +27,7 @@ const Compare = React.lazy(() => import("./pages/Compare"));
 const Returns = React.lazy(() => import("./pages/Returns"));
 const GrowerBatches = React.lazy(() => import("./pages/GrowerBatches"));
 const GrowerCredits = React.lazy(() => import("./pages/GrowerCredits"));
+const Wishlist = React.lazy(() => import("./pages/Wishlist"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
