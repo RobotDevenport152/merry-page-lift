@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Calendar, Scissors, Droplets, Wind, Sparkles, ShieldCheck, Package, Search, Share2, Copy, Check } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const PROCESS_STEPS = [
   { icon: Scissors, labelZh: '剪获', labelEn: 'Shearing', descZh: '每年只剪一次，确保纤维最佳长度', descEn: 'Once a year for optimal fiber length' },
@@ -16,11 +17,16 @@ const PROCESS_STEPS = [
   { icon: Package, labelZh: '成品', labelEn: 'Finished', descZh: '丝光、碳化精制', descEn: 'Mercerizing and carbonizing' },
 ];
 
-const MOCK_BATCHES = [
-  { code: 'PA-2025-001', farm: 'Canterbury Hills Farm', region: 'Canterbury', date: '2025-01-15', weight: 45.2, micron: 22.5, grade: 'A+', status: 'ready' },
-  { code: 'PA-2025-002', farm: 'Waikato Valley Farm', region: 'Waikato', date: '2025-02-10', weight: 38.0, micron: 23.1, grade: 'A', status: 'combed' },
-  { code: 'PA-2025-003', farm: 'Southland Heritage Farm', region: 'Southland', date: '2025-03-01', weight: 52.8, micron: 21.8, grade: 'A+', status: 'scoured' },
-];
+interface BatchResult {
+  code: string;
+  farm: string;
+  region: string;
+  date: string;
+  weight: number;
+  micron: number;
+  grade: string;
+  status: string;
+}
 
 const STATUS_MAP: Record<string, number> = { raw: 0, scoured: 1, combed: 2, ready: 5 };
 
@@ -29,18 +35,60 @@ export default function TraceabilityPage() {
   const [urlParams] = useSearchParams();
   const initialCode = urlParams.get('code') || '';
   const [searchCode, setSearchCode] = useState(initialCode);
-  const [selectedBatch, setSelectedBatch] = useState<typeof MOCK_BATCHES[0] | null>(
-    initialCode ? MOCK_BATCHES.find(b => b.code.toLowerCase() === initialCode.toLowerCase()) || null : null
-  );
+  const [selectedBatch, setSelectedBatch] = useState<BatchResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const [searching, setSearching] = useState(false);
 
-  const handleSearch = () => {
-    const found = MOCK_BATCHES.find(b => b.code.toLowerCase() === searchCode.toLowerCase());
-    setSelectedBatch(found || null);
-    if (!found) toast.error(locale === 'zh' ? '未找到该批次，请检查编号是否正确' : 'Batch not found. Please check the code.');
+  useEffect(() => {
+    if (initialCode) {
+      (async () => {
+        const { data } = await supabase
+          .from('fiber_batches')
+          .select('*')
+          .ilike('batch_code', initialCode)
+          .maybeSingle();
+        if (data) {
+          setSelectedBatch({
+            code: data.batch_code,
+            farm: data.farm_name,
+            region: data.region,
+            date: data.shearing_date || data.created_at,
+            weight: Number(data.weight_kg) || 0,
+            micron: Number(data.micron_measurement) || 0,
+            grade: data.fiber_grade || 'N/A',
+            status: data.status || 'raw',
+          });
+        }
+      })();
+    }
+  }, [initialCode]);
+
+  const handleSearch = async () => {
+    setSearching(true);
+    const { data } = await supabase
+      .from('fiber_batches')
+      .select('*')
+      .ilike('batch_code', searchCode.trim())
+      .maybeSingle();
+    setSearching(false);
+    if (data) {
+      setSelectedBatch({
+        code: data.batch_code,
+        farm: data.farm_name,
+        region: data.region,
+        date: data.shearing_date || data.created_at,
+        weight: Number(data.weight_kg) || 0,
+        micron: Number(data.micron_measurement) || 0,
+        grade: data.fiber_grade || 'N/A',
+        status: data.status || 'raw',
+      });
+    } else {
+      setSelectedBatch(null);
+      toast.error(locale === 'zh' ? '未找到该批次，请检查编号是否正确' : 'Batch not found. Please check the code.');
+    }
   };
 
-  const handleShare = (batch: typeof MOCK_BATCHES[0]) => {
+  const handleShare = (batch: BatchResult) => {
     const shareText = locale === 'zh'
       ? `我的太平洋羊驼被来自新西兰${batch.region}的 ${batch.farm}，这批纤维于${batch.date}剪获，微米数${batch.micron}μm，等级${batch.grade}。`
       : `My Pacific Alpacas duvet comes from ${batch.farm} in ${batch.region}, NZ. Fiber sheared ${batch.date}, ${batch.micron}μm, Grade ${batch.grade}.`;
@@ -189,24 +237,17 @@ export default function TraceabilityPage() {
             </div>
           )}
 
-          {/* All Batches */}
+          {/* Sample batch codes */}
           <div className="max-w-3xl mx-auto">
-            <h3 className="font-display text-xl mb-4">{locale === 'zh' ? '最新批次记录' : 'Recent Batches'}</h3>
-            <div className="space-y-3">
-              {MOCK_BATCHES.map(batch => (
+            <h3 className="font-display text-xl mb-4">{locale === 'zh' ? '示例溯源批次' : 'Sample Batch Codes'}</h3>
+            <div className="flex flex-wrap gap-2">
+              {['PA-2025-001','PA-2025-003','PA-2025-005','PA-2025-009','PA-2025-015'].map(code => (
                 <button
-                  key={batch.code}
-                  onClick={() => { setSearchCode(batch.code); setSelectedBatch(batch); }}
-                  className="w-full text-left bg-card rounded-lg border border-border p-4 hover:border-gold/30 transition-colors flex items-center justify-between"
+                  key={code}
+                  onClick={() => { setSearchCode(code); }}
+                  className="px-3 py-1.5 text-xs font-mono bg-card border border-border rounded hover:border-gold/30 transition-colors"
                 >
-                  <div>
-                    <p className="font-mono text-sm font-semibold">{batch.code}</p>
-                    <p className="text-xs text-muted-foreground font-body">{batch.farm} · {batch.region}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-body">{batch.weight}kg · {batch.micron}μm</p>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-800 capitalize">{batch.status}</span>
-                  </div>
+                  {code}
                 </button>
               ))}
             </div>
