@@ -72,6 +72,7 @@ const App = () => (
               <Route path="/returns" element={<Returns />} />
               <Route path="/grower/batches" element={<GrowerBatches />} />
               <Route path="/grower/credits" element={<GrowerCredits />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

@@ -337,10 +337,40 @@ export default function CheckoutPage() {
               ))}
               <div className="border-t border-border mt-3 pt-3 space-y-1 text-sm font-body">
                 <div className="flex justify-between"><span>{locale === 'zh' ? '小计' : 'Subtotal'}</span><span>{fp(cartTotal)}</span></div>
-                {promoDiscount > 0 && (
-                  <div className="flex justify-between text-gold"><span>{locale === 'zh' ? '折扣' : 'Discount'}</span><span>-{fp(promoDiscount)}</span></div>
+                {effectiveDiscount > 0 && (
+                  <div className="flex justify-between text-gold"><span>{locale === 'zh' ? '折扣' : 'Discount'}</span><span>-{fp(effectiveDiscount)}</span></div>
                 )}
                 <div className="flex justify-between"><span>{locale === 'zh' ? '运费' : 'Shipping'}</span><span>{shipping === 0 ? (locale === 'zh' ? '免运费' : 'Free') : fp(shipping)}</span></div>
+
+                {/* Promo code input */}
+                {!dbPromoApplied && !promoCode && (
+                  <div className="pt-2">
+                    <div className="flex gap-2">
+                      <div className="flex-1 relative">
+                        <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder={locale === 'zh' ? '促销码' : 'Promo code'}
+                          value={dbPromoInput}
+                          onChange={e => setDbPromoInput(e.target.value)}
+                          onKeyDown={e => e.key === 'Enter' && handleApplyDbPromo()}
+                          className="w-full pl-9 pr-3 py-2 border border-border rounded text-xs font-body bg-background"
+                        />
+                      </div>
+                      <button onClick={handleApplyDbPromo} className="px-3 py-2 bg-primary text-primary-foreground text-xs font-body rounded hover:opacity-90 transition">
+                        {locale === 'zh' ? '使用' : 'Apply'}
+                      </button>
+                    </div>
+                    {dbPromoError && <p className="text-xs text-destructive font-body mt-1">{dbPromoError}</p>}
+                  </div>
+                )}
+                {dbPromoApplied && (
+                  <div className="flex items-center justify-between text-xs font-body pt-1">
+                    <span className="text-gold">✓ {dbPromoApplied}</span>
+                    <button onClick={() => { setDbPromoApplied(''); setDbPromoDiscount(0); }} className="text-muted-foreground underline">{locale === 'zh' ? '移除' : 'Remove'}</button>
+                  </div>
+                )}
+
                 <div className="flex justify-between font-display text-lg font-semibold pt-2 border-t border-border">
                   <span>{t.checkout.total}</span>
                   <span className="text-gold">{fp(total)}</span>
