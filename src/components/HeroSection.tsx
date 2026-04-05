@@ -86,6 +86,9 @@ export default function HeroSection() {
         </div>
       </section>
 
+      {/* Trust Bar */}
+      <TrustBar />
+
       {/* About */}
       <section id="about" className="py-24 bg-background">
         <div className="container mx-auto px-6">
