@@ -392,54 +392,71 @@ export default function ProductDetailPage() {
 
             {activeTab === 'reviews' && (
               <div className="max-w-2xl mx-auto">
-                <div className="mb-8 text-center">
-                  <div className="text-4xl font-display font-semibold mb-1">4.8</div>
-                  <div className="text-gold text-xl mb-1">★★★★★</div>
-                  <div className="text-sm text-muted-foreground font-body">127条评价 / 127 reviews</div>
-                </div>
+                {(() => {
+                  const reviews = dbReviews;
+                  const total = reviews.length;
+                  const avg = total > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1) : '0';
+                  const breakdown = [5, 4, 3, 2, 1].map(s => ({
+                    stars: s,
+                    label: `${s}★`,
+                    pct: total > 0 ? Math.round((reviews.filter(r => r.rating === s).length / total) * 100) : 0,
+                  }));
 
-                <div className="space-y-2 mb-8 max-w-xs mx-auto">
-                  {[
-                    { stars: 5, label: '5★', pct: 78 },
-                    { stars: 4, label: '4★', pct: 16 },
-                    { stars: 3, label: '3★', pct: 5 },
-                    { stars: 2, label: '2★', pct: 1 },
-                    { stars: 1, label: '1★', pct: 0 },
-                  ].map(row => (
-                    <div key={row.stars} className="flex items-center gap-3 text-sm font-body">
-                      <span className="w-6 text-muted-foreground">{row.label}</span>
-                      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                        <div className="h-full bg-gold rounded-full" style={{ width: `${row.pct}%` }} />
+                  return (
+                    <>
+                      <div className="mb-8 text-center">
+                        <div className="text-4xl font-display font-semibold mb-1">{avg}</div>
+                        <div className="text-gold text-xl mb-1">{'★'.repeat(Math.round(Number(avg)))}{'☆'.repeat(5 - Math.round(Number(avg)))}</div>
+                        <div className="text-sm text-muted-foreground font-body">{total} {locale === 'zh' ? '条评价' : 'reviews'}</div>
                       </div>
-                      <span className="w-8 text-right text-muted-foreground">{row.pct}%</span>
-                    </div>
-                  ))}
-                </div>
 
-                <div className="space-y-4 mb-6">
-                  {MOCK_REVIEWS.map(review => (
-                    <div key={review.id} className="border border-border rounded-sm p-4">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <span className="font-body font-semibold text-sm">{review.author}</span>
-                          {review.verified && (
-                            <span className="ml-2 text-xs text-green-600 font-body">✓ 已验证购买 / Verified Purchase</span>
-                          )}
+                      <div className="space-y-2 mb-8 max-w-xs mx-auto">
+                        {breakdown.map(row => (
+                          <div key={row.stars} className="flex items-center gap-3 text-sm font-body">
+                            <span className="w-6 text-muted-foreground">{row.label}</span>
+                            <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                              <div className="h-full bg-gold rounded-full" style={{ width: `${row.pct}%` }} />
+                            </div>
+                            <span className="w-8 text-right text-muted-foreground">{row.pct}%</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {reviews.length === 0 ? (
+                        <p className="text-center text-muted-foreground font-body text-sm py-8">
+                          {locale === 'zh' ? '暂无评价，成为第一个评价者！' : 'No reviews yet. Be the first to review!'}
+                        </p>
+                      ) : (
+                        <div className="space-y-4 mb-6">
+                          {reviews.map(review => (
+                            <div key={review.id} className="border border-border rounded-sm p-4">
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <span className="font-body font-semibold text-sm">
+                                    {review.country_code && <span className="mr-1">{review.country_code === 'NZ' ? '🇳🇿' : review.country_code === 'CN' ? '🇨🇳' : review.country_code === 'US' ? '🇺🇸' : '🌍'}</span>}
+                                    {locale === 'zh' ? '用户' : 'Customer'}
+                                  </span>
+                                  {review.verified_purchase && (
+                                    <span className="ml-2 text-xs text-green-600 font-body">✓ {locale === 'zh' ? '已验证购买' : 'Verified Purchase'}</span>
+                                  )}
+                                </div>
+                                <span className="text-xs text-muted-foreground font-body">{new Date(review.created_at).toLocaleDateString()}</span>
+                              </div>
+                              <div className="text-gold text-sm mb-1">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
+                              {review.title && <p className="font-body font-semibold text-sm mb-1">{review.title}</p>}
+                              <p className="text-sm font-body text-muted-foreground">{review.content}</p>
+                              <div className="mt-2 flex items-center gap-2">
+                                <button className="text-xs text-muted-foreground font-body flex items-center gap-1 hover:text-foreground">
+                                  <ThumbsUp className="w-3 h-3" /> {locale === 'zh' ? '有帮助' : 'Helpful'} ({review.helpful_count || 0})
+                                </button>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        <span className="text-xs text-muted-foreground font-body">{review.date}</span>
-                      </div>
-                      <div className="text-gold text-sm mb-1">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
-                      <div className="text-xs text-muted-foreground font-body mb-2">{locale === 'zh' ? '购买规格' : 'Variant'}: {review.productVariant}</div>
-                      <p className="text-sm font-body text-muted-foreground">
-                        {locale === 'zh' ? review.textZh : review.textEn}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="text-center">
-                  <span className="text-sm font-body text-gold cursor-default">查看全部评价 →</span>
-                </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             )}
           </div>
