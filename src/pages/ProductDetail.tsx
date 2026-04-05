@@ -225,13 +225,16 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              <button
-                onClick={() => { addToCart(product, selectedVariant || undefined); }}
-                disabled={product.stock <= 0}
-                className="w-full py-3 bg-accent text-accent-foreground font-body font-semibold rounded-sm tracking-wider hover:bg-accent/90 transition disabled:opacity-50"
-              >
-                {product.stock <= 0 ? (locale === 'zh' ? '已售罄' : 'Sold Out') : t.products.addToCart}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { addToCart(product, selectedVariant || undefined); }}
+                  disabled={product.stock <= 0}
+                  className="flex-1 py-3 bg-accent text-accent-foreground font-body font-semibold rounded-sm tracking-wider hover:bg-accent/90 transition disabled:opacity-50"
+                >
+                  {product.stock <= 0 ? (locale === 'zh' ? '已售罄' : 'Sold Out') : t.products.addToCart}
+                </button>
+                <WishlistButton productId={product.id} className="w-12 h-12" />
+              </div>
 
               <div className="mt-4">
                 <Link
