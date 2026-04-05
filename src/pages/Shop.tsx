@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Search, ShoppingBag } from 'lucide-react';
+import WishlistButton from '@/components/WishlistButton';
 import { useApp } from '@/contexts/AppContext';
 import { type Product } from '@/lib/store';
 import { useProducts } from '@/hooks/useProducts';
