@@ -27,6 +27,7 @@ const Compare = React.lazy(() => import("./pages/Compare"));
 const Returns = React.lazy(() => import("./pages/Returns"));
 const GrowerBatches = React.lazy(() => import("./pages/GrowerBatches"));
 const GrowerCredits = React.lazy(() => import("./pages/GrowerCredits"));
+const Wishlist = React.lazy(() => import("./pages/Wishlist"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -71,6 +72,7 @@ const App = () => (
               <Route path="/returns" element={<Returns />} />
               <Route path="/grower/batches" element={<GrowerBatches />} />
               <Route path="/grower/credits" element={<GrowerCredits />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

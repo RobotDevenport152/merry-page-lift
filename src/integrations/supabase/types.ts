@@ -227,6 +227,56 @@ export type Database = {
         }
         Relationships: []
       }
+      product_reviews: {
+        Row: {
+          content: string | null
+          country_code: string | null
+          created_at: string
+          helpful_count: number | null
+          id: string
+          product_id: string
+          rating: number
+          title: string | null
+          updated_at: string
+          user_id: string
+          verified_purchase: boolean | null
+        }
+        Insert: {
+          content?: string | null
+          country_code?: string | null
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          product_id: string
+          rating: number
+          title?: string | null
+          updated_at?: string
+          user_id: string
+          verified_purchase?: boolean | null
+        }
+        Update: {
+          content?: string | null
+          country_code?: string | null
+          created_at?: string
+          helpful_count?: number | null
+          id?: string
+          product_id?: string
+          rating?: number
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+          verified_purchase?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           category: string
@@ -344,6 +394,48 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_codes: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          id: string
+          is_active: boolean | null
+          max_uses: number | null
+          min_amount: number | null
+          uses_count: number | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_amount?: number | null
+          uses_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          id?: string
+          is_active?: boolean | null
+          max_uses?: number | null
+          min_amount?: number | null
+          uses_count?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -403,6 +495,35 @@ export type Database = {
           status?: string | null
         }
         Relationships: []
+      }
+      wishlist: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
