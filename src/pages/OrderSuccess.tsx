@@ -59,6 +59,14 @@ export default function OrderSuccessPage() {
               {locale === 'zh' ? '批次编号' : 'Batch Code'}
             </p>
             <p className="font-mono text-base font-semibold text-gold mb-3">{batchCode}</p>
+            <div className="mb-3">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(`${window.location.origin}/traceability?code=${batchCode}`)}`}
+                alt="QR Code"
+                className="mx-auto w-24 h-24"
+                loading="lazy"
+              />
+            </div>
             <p className="text-xs text-muted-foreground font-body mb-4">
               {locale === 'zh'
                 ? '扫描包装上的二维码，或点击下方按钮，查看您的被子来自哪个牧场的哪批羊驼。'
