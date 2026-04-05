@@ -39,8 +39,7 @@ export default function TraceabilityPage() {
   const [copied, setCopied] = useState(false);
   const [searching, setSearching] = useState(false);
 
-  // Auto-search on mount if code provided
-  useState(() => {
+  useEffect(() => {
     if (initialCode) {
       (async () => {
         const { data } = await supabase
