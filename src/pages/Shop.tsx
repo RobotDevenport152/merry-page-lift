@@ -203,15 +203,23 @@ export default function ShopPage() {
                         <h3 className="font-display text-lg font-semibold mb-1 hover:text-gold transition-colors">{locale === 'zh' ? product.nameZh : product.nameEn}</h3>
                       </Link>
                       <p className="text-xs text-muted-foreground font-body mb-3 line-clamp-2">{locale === 'zh' ? product.descZh : product.descEn}</p>
+                      {!outOfStock && product.stock <= 15 && product.stock > 0 && (
+                        <p className="text-xs text-destructive font-body mb-2">
+                          {locale === 'zh' ? `仅剩 ${product.stock} 件 — 尽快下单` : `Only ${product.stock} left in stock — order soon`}
+                        </p>
+                      )}
                       <div className="flex items-center justify-between">
                         <span className="text-gold font-display text-xl font-semibold">{fp(product.prices[currency])}</span>
-                        <button
-                          onClick={e => { e.stopPropagation(); handleAddToCart(product); }}
-                          className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${outOfStock ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary text-primary-foreground hover:bg-gold'}`}
-                          disabled={outOfStock}
-                        >
-                          <ShoppingBag className="w-4 h-4" />
-                        </button>
+                        <div className="flex gap-1.5">
+                          <WishlistButton productId={product.id} />
+                          <button
+                            onClick={e => { e.stopPropagation(); handleAddToCart(product); }}
+                            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${outOfStock ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary text-primary-foreground hover:bg-gold'}`}
+                            disabled={outOfStock}
+                          >
+                            <ShoppingBag className="w-4 h-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
