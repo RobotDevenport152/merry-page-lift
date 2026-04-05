@@ -198,6 +198,11 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
+              {product.stock > 0 && product.stock <= 15 && (
+                <p className="text-sm text-destructive font-body mb-2 font-semibold">
+                  {locale === 'zh' ? `⚠️ 仅剩 ${product.stock} 件 — 尽快下单` : `⚠️ Only ${product.stock} left in stock — order soon`}
+                </p>
+              )}
               <p className="text-xs text-muted-foreground font-body mb-2">
                 {locale === 'zh' ? `库存: ${product.stock} 件` : `Stock: ${product.stock} units`}
               </p>
