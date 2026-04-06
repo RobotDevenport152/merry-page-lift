@@ -65,10 +65,8 @@ export default function TraceabilityPage() {
 
   const handleSearch = async () => {
     setSearching(true);
-    // Queries public_fiber_batches VIEW (not the base table)
-        // This view exposes only non-PII fields per the RLS migration.
-        const { data } = await supabase
-      .from('public_fiber_batches')
+    const { data } = await supabase
+      .from('fiber_batches')
       .select('*')
       .ilike('batch_code', searchCode.trim())
       .maybeSingle();
