@@ -53,9 +53,8 @@ export default function ProductDetailPage() {
   }, [product?.id]);
 
   const [activeImg, setActiveImg] = useState(0);
-  const images: string[] = (product as any).images?.length > 0
-    ? (product as any).images
-    : [product.image];
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
