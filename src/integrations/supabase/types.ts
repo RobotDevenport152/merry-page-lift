@@ -527,9 +527,57 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_fiber_batches: {
+        Row: {
+          batch_code: string | null
+          created_at: string | null
+          farm_name: string | null
+          fiber_grade: string | null
+          manufacturing_date: string | null
+          micron_measurement: number | null
+          processing_date: string | null
+          product_type: string | null
+          region: string | null
+          shearing_date: string | null
+          status: string | null
+          weight_kg: number | null
+        }
+        Insert: {
+          batch_code?: string | null
+          created_at?: string | null
+          farm_name?: string | null
+          fiber_grade?: string | null
+          manufacturing_date?: string | null
+          micron_measurement?: number | null
+          processing_date?: string | null
+          product_type?: string | null
+          region?: string | null
+          shearing_date?: string | null
+          status?: string | null
+          weight_kg?: number | null
+        }
+        Update: {
+          batch_code?: string | null
+          created_at?: string | null
+          farm_name?: string | null
+          fiber_grade?: string | null
+          manufacturing_date?: string | null
+          micron_measurement?: number | null
+          processing_date?: string | null
+          product_type?: string | null
+          region?: string | null
+          shearing_date?: string | null
+          status?: string | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      decrement_product_stock: {
+        Args: { p_product_id: string; p_quantity: number }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
