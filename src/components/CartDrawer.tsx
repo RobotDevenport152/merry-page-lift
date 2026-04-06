@@ -7,7 +7,7 @@ import { type Currency } from '@/lib/store';
 const FREE_SHIPPING_THRESHOLD: Record<Currency, number> = { NZD: 500, CNY: 2250, USD: 300 };
 
 export default function CartDrawer() {
-  const { cart, cartOpen, setCartOpen, removeFromCart, updateQuantity, cartTotal, promoDiscount, applyPromo, promoCode, fp, t, locale, currency } = useApp();
+  const { cart, cartOpen, setCartOpen, removeFromCart, updateQuantity, cartTotal, promoDiscount, applyPromo, promoCode, setPromoCode, setPromoDiscount, fp, t, locale, currency } = useApp();
   const [codeInput, setCodeInput] = useState('');
   const [promoError, setPromoError] = useState('');
 
@@ -77,14 +77,14 @@ export default function CartDrawer() {
                   {item.variant && <p className="text-xs text-muted-foreground font-body">{item.variant}</p>}
                   <p className="text-gold font-body font-semibold text-sm mt-1">{fp(item.product.prices[currency])}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-7 h-7 rounded border border-border flex items-center justify-center hover:bg-muted">
+                    <button onClick={() => updateQuantity(item.product.id, item.quantity - 1, item.variant)} className="w-7 h-7 rounded border border-border flex items-center justify-center hover:bg-muted">
                       <Minus className="w-3 h-3" />
                     </button>
                     <span className="text-sm font-body w-6 text-center">{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} className="w-7 h-7 rounded border border-border flex items-center justify-center hover:bg-muted">
+                    <button onClick={() => updateQuantity(item.product.id, item.quantity + 1, item.variant)} className="w-7 h-7 rounded border border-border flex items-center justify-center hover:bg-muted">
                       <Plus className="w-3 h-3" />
                     </button>
-                    <button onClick={() => removeFromCart(item.product.id)} className="ml-auto text-xs text-muted-foreground hover:text-destructive font-body">
+                    <button onClick={() => removeFromCart(item.product.id, item.variant)} className="ml-auto text-xs text-muted-foreground hover:text-destructive font-body">
                       {t.cart.remove}
                     </button>
                   </div>
@@ -117,7 +117,7 @@ export default function CartDrawer() {
             ) : (
               <div className="flex items-center justify-between text-sm font-body">
                 <span className="text-gold">✓ {promoCode}</span>
-                <button onClick={() => { /* reset promo */ }} className="text-xs text-muted-foreground underline">{locale === 'zh' ? '移除' : 'Remove'}</button>
+                <button onClick={() => { setPromoCode(''); setPromoDiscount(0); }} className="text-xs text-muted-foreground underline">{locale === 'zh' ? '移除' : 'Remove'}</button>
               </div>
             )}
             {promoError && <p className="text-xs text-destructive font-body">{promoError}</p>}

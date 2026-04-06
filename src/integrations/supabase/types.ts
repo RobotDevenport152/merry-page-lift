@@ -112,6 +112,7 @@ export type Database = {
       }
       order_items: {
         Row: {
+          batch_code: string | null
           created_at: string
           id: string
           order_id: string
@@ -123,6 +124,7 @@ export type Database = {
           variant: string | null
         }
         Insert: {
+          batch_code?: string | null
           created_at?: string
           id?: string
           order_id: string
@@ -134,6 +136,7 @@ export type Database = {
           variant?: string | null
         }
         Update: {
+          batch_code?: string | null
           created_at?: string
           id?: string
           order_id?: string
@@ -163,6 +166,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          carrier: string | null
           created_at: string
           currency: string
           discount: number
@@ -180,10 +184,12 @@ export type Database = {
           status: string
           subtotal: number
           total: number
+          tracking_number: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          carrier?: string | null
           created_at?: string
           currency?: string
           discount?: number
@@ -201,10 +207,12 @@ export type Database = {
           status?: string
           subtotal?: number
           total?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          carrier?: string | null
           created_at?: string
           currency?: string
           discount?: number
@@ -222,6 +230,7 @@ export type Database = {
           status?: string
           subtotal?: number
           total?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -435,6 +444,38 @@ export type Database = {
           valid_until?: string | null
         }
         Relationships: []
+      }
+      stock_notifications: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          notified_at: string | null
+          product_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          notified_at?: string | null
+          product_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          notified_at?: string | null
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stock_notifications_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

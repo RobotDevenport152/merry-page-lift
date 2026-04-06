@@ -16,6 +16,7 @@ interface CartContextType {
   promoCode: string;
   setPromoCode: (code: string) => void;
   promoDiscount: number;
+  setPromoDiscount: (d: number) => void;
   applyPromo: (code: string) => boolean;
   cartOpen: boolean;
   setCartOpen: (open: boolean) => void;
@@ -148,7 +149,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       value={{
         cart, addToCart, removeFromCart, updateQuantity, clearCart,
         cartTotal, cartCount,
-        promoCode, setPromoCode, promoDiscount, applyPromo,
+        promoCode, setPromoCode, promoDiscount, setPromoDiscount, applyPromo,
         cartOpen, setCartOpen,
         currency, setCurrency, fp,
       }}

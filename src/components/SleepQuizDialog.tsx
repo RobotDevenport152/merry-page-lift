@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useApp } from '@/contexts/AppContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { dbToLegacyProduct, type DbProduct } from '@/hooks/useProducts';
-import { ShoppingBag } from 'lucide-react';
 
 interface Props {
   open: boolean;
@@ -18,10 +15,9 @@ const STEPS = [
     questionEn: 'What is your main sleep concern?',
     options: [
       { zh: '怕冷/保暖不足', en: 'Too cold / Insufficient warmth', value: 'cold' },
-      { zh: '浅睡易醒', en: 'Light sleeper / Wake easily', value: 'light' },
       { zh: '出汗/闷热', en: 'Sweating / Too hot', value: 'hot' },
       { zh: '过敏/螨虫', en: 'Allergies / Dust mites', value: 'allergy' },
-      { zh: '初生婴儿使用', en: 'For newborn baby', value: 'newborn' },
+      { zh: '总体睡眠质量差', en: 'Poor overall sleep quality', value: 'quality' },
     ],
   },
   {
@@ -53,20 +49,17 @@ const STEPS = [
   },
 ];
 
-function getRecommendedCategory(answers: string[]): string {
-  const concern = answers[0];
-  if (concern === 'newborn') return 'newborn';
-  if (concern === 'light' || concern === 'cold') return 'duvet'; // premium
-  if (concern === 'hot') return 'duvet'; // luxury/summer
-  return 'duvet';
-}
+const PRODUCT_MAP: Record<string, { zh: string; en: string; id: string }> = {
+  premium: { zh: '高奢款羊驼被', en: 'Premium Luxury Duvet', id: 'duvet-premium' },
+  mid: { zh: '轻奢款羊驼被', en: 'Luxury Alpaca Duvet', id: 'duvet-luxury' },
+  budget: { zh: '经典款羊驼被', en: 'Classic Alpaca Duvet', id: 'duvet-classic' },
+};
 
 export function SleepQuizDialog({ open, onOpenChange }: Props) {
-  const { locale, fp, currency, addToCart } = useApp();
+  const { locale } = useApp();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [done, setDone] = useState(false);
-  const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
 
   const handleSelect = (value: string) => {
     const newAnswers = [...answers, value];
@@ -78,22 +71,12 @@ export function SleepQuizDialog({ open, onOpenChange }: Props) {
     }
   };
 
-  useEffect(() => {
-    if (!done) return;
-    const category = getRecommendedCategory(answers);
-    supabase
-      .from('products')
-      .select('*')
-      .eq('is_active', true)
-      .eq('category', category)
-      .order('is_featured', { ascending: false })
-      .limit(3)
-      .then(({ data }) => {
-        if (data) setRecommendedProducts(data.map(d => dbToLegacyProduct(d as DbProduct)));
-      });
-  }, [done, answers]);
+  const reset = () => { setStep(0); setAnswers([]); setDone(false); };
 
-  const reset = () => { setStep(0); setAnswers([]); setDone(false); setRecommendedProducts([]); };
+  const getRecommendation = () => {
+    const budget = answers[2];
+    return PRODUCT_MAP[budget] || PRODUCT_MAP.mid;
+  };
 
   return (
     <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) reset(); }}>
@@ -107,12 +90,15 @@ export function SleepQuizDialog({ open, onOpenChange }: Props) {
         {!done ? (
           <AnimatePresence mode="wait">
             <motion.div key={step} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
+              {/* Progress */}
               <div className="flex gap-1 mb-4">
                 {STEPS.map((_, i) => (
                   <div key={i} className={`h-1 flex-1 rounded-full ${i <= step ? 'bg-accent' : 'bg-muted'}`} />
                 ))}
               </div>
+
               <p className="font-body text-sm mb-4">{locale === 'zh' ? STEPS[step].questionZh : STEPS[step].questionEn}</p>
+
               <div className="space-y-2">
                 {STEPS[step].options.map((opt) => (
                   <button
@@ -127,39 +113,20 @@ export function SleepQuizDialog({ open, onOpenChange }: Props) {
             </motion.div>
           </AnimatePresence>
         ) : (
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="py-4">
-            <p className="text-muted-foreground font-body text-sm mb-4 text-center">
-              {locale === 'zh' ? '为您推荐以下产品' : 'Recommended Products for You'}
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-4">
+            <p className="text-muted-foreground font-body text-sm mb-2">
+              {locale === 'zh' ? '为您推荐' : 'Recommended for You'}
             </p>
-            {recommendedProducts.length > 0 ? (
-              <div className="space-y-3">
-                {recommendedProducts.map(product => (
-                  <div key={product.id} className="flex items-center gap-3 border border-border rounded-sm p-3">
-                    <img src={product.image} alt="" className="w-14 h-14 object-cover rounded" />
-                    <div className="flex-1 min-w-0">
-                      <Link
-                        to={`/product/${product.id}`}
-                        onClick={() => onOpenChange(false)}
-                        className="font-body font-semibold text-sm hover:text-gold truncate block"
-                      >
-                        {locale === 'zh' ? product.nameZh : product.nameEn}
-                      </Link>
-                      <p className="text-gold font-display text-sm">{fp(product.prices[currency])}</p>
-                    </div>
-                    <button
-                      onClick={() => { addToCart(product); onOpenChange(false); }}
-                      className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:bg-gold flex-shrink-0"
-                    >
-                      <ShoppingBag className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center">
-                <div className="w-6 h-6 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto" />
-              </div>
-            )}
+            <p className="font-display text-2xl font-semibold mb-4">
+              {locale === 'zh' ? getRecommendation().zh : getRecommendation().en}
+            </p>
+            <Link
+              to={`/product/${getRecommendation().id}`}
+              onClick={() => onOpenChange(false)}
+              className="inline-block px-6 py-2 bg-accent text-accent-foreground rounded-sm font-body hover:bg-accent/90 transition-colors"
+            >
+              {locale === 'zh' ? '查看产品' : 'View Product'}
+            </Link>
           </motion.div>
         )}
       </DialogContent>

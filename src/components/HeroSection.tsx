@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Thermometer, Feather, Droplets, Bug, Zap, ShoppingBag, Star, ArrowRight } from 'lucide-react';
-import TrustBar from '@/components/TrustBar';
 import GrowerNetworkSection from '@/components/GrowerNetworkSection';
 import Footer from '@/components/Footer';
 import { SleepQuizDialog } from '@/components/SleepQuizDialog';
@@ -56,7 +55,7 @@ export default function HeroSection() {
       {/* Hero */}
       <section className="relative h-screen overflow-hidden">
         <div className="absolute inset-0">
-          <img src="/images/hero-comforter.jpg" alt="Pacific Alpacas Luxury Duvet" className="w-full h-full object-cover" width={1920} height={1080} />
+          <img src="/images/hero-alpacas.jpg" alt="Pacific Alpacas Luxury Duvet" className="w-full h-full object-cover" width={1920} height={1415} />
           <div className="absolute inset-0 bg-gradient-to-b from-primary/60 via-primary/30 to-primary/70" />
         </div>
         <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
@@ -86,9 +85,6 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
-
-      {/* Trust Bar */}
-      <TrustBar />
 
       {/* About */}
       <section id="about" className="py-24 bg-background">

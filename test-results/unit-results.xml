@@ -1,151 +1,151 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuites name="vitest tests" tests="70" failures="0" errors="0" time="0.511195299">
-    <testsuite name="src/test/example.test.ts" timestamp="2026-04-06T22:31:58.095Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="1" failures="0" errors="0" skipped="0" time="0.003591716">
-        <testcase classname="src/test/example.test.ts" name="example &gt; should pass" time="0.00193062">
+<testsuites name="vitest tests" tests="70" failures="0" errors="0" time="0.567648766">
+    <testsuite name="src/test/example.test.ts" timestamp="2026-04-06T23:42:55.043Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="1" failures="0" errors="0" skipped="0" time="0.00316919">
+        <testcase classname="src/test/example.test.ts" name="example &gt; should pass" time="0.001773179">
         </testcase>
     </testsuite>
-    <testsuite name="src/test/unit/context.test.tsx" timestamp="2026-04-06T22:31:58.097Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="15" failures="0" errors="0" skipped="0" time="0.451168318">
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; starts with an empty cart" time="0.058966738">
+    <testsuite name="src/test/unit/context.test.tsx" timestamp="2026-04-06T23:42:55.046Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="15" failures="0" errors="0" skipped="0" time="0.511213159">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; starts with an empty cart" time="0.060496886">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; addToCart increments count and total" time="0.060479365">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; addToCart increments count and total" time="0.067003364">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; adding the same product again increases quantity" time="0.031137999">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; adding the same product again increases quantity" time="0.037894047">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; removeFromCart clears the item" time="0.034469712">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; removeFromCart clears the item" time="0.032469424">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; updateQuantity sets new quantity" time="0.031139071">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; updateQuantity sets new quantity" time="0.030473448">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; updateQuantity(id, 0) removes the item" time="0.027215431">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; updateQuantity(id, 0) removes the item" time="0.030111307">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; total reflects sum of all items" time="0.027797872">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — cart (via useApp shim) &gt; total reflects sum of all items" time="0.041957143">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — variant isolation (P1 regression tests) &gt; two different variants are separate cart entries" time="0.030347619">
+        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — variant isolation (P1 regression tests) &gt; two different variants are separate cart entries" time="0.029330348">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — variant isolation (P1 regression tests) &gt; removing one variant leaves the other intact" time="0.045374501">
+        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — variant isolation (P1 regression tests) &gt; removing one variant leaves the other intact" time="0.048020541">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — variant isolation (P1 regression tests) &gt; re-adding the same variant deduplicates (quantity++)" time="0.02238317">
+        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — variant isolation (P1 regression tests) &gt; re-adding the same variant deduplicates (quantity++)" time="0.029537814">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — localStorage persistence &gt; writes cart to localStorage after add" time="0.015123679">
+        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — localStorage persistence &gt; writes cart to localStorage after add" time="0.019283426">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — localStorage persistence &gt; starts empty when localStorage is clear (beforeEach guarantee)" time="0.002773323">
+        <testcase classname="src/test/unit/context.test.tsx" name="CartContext — localStorage persistence &gt; starts empty when localStorage is clear (beforeEach guarantee)" time="0.009987119">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — promo codes &gt; WELCOME10 sets promoDiscount to 10% of total" time="0.030616693">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — promo codes &gt; WELCOME10 sets promoDiscount to 10% of total" time="0.033653017">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — promo codes &gt; LUXURY20 applies when total exceeds minAmount" time="0.027866559">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — promo codes &gt; LUXURY20 applies when total exceeds minAmount" time="0.032158803">
         </testcase>
-        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — fp helper &gt; formats CNY with default currency" time="0.002716297">
-        </testcase>
-    </testsuite>
-    <testsuite name="src/test/unit/schemas.test.ts" timestamp="2026-04-06T22:31:58.102Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="22" failures="0" errors="0" skipped="0" time="0.014974347">
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; accepts a fully valid payload" time="0.003644795">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects empty name" time="0.00138075">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects malformed email" time="0.000772546">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects phone shorter than 7 chars" time="0.000699968">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects invalid paymentMethod" time="0.000861936">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; accepts all three valid payment methods" time="0.000624429">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects giftMessage longer than 100 chars" time="0.000679655">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; accepts giftMessage of exactly 100 chars" time="0.000298531">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; optional address fields can be omitted" time="0.000699165">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; defaults isGift to false when omitted" time="0.000299883">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; accepts valid contact form data" time="0.000269754">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; rejects message shorter than 10 chars" time="0.000323252">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; rejects missing name" time="0.000187381">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; rejects invalid email" time="0.000196755">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; allows optional phone and subject" time="0.000239601">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; accepts PA-2025-001" time="0.000243774">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; accepts PA-2025-999" time="0.000235362">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects lowercase pa-2025-001" time="0.000204015">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects missing leading PA" time="0.000192163">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects wrong digit count in batch number" time="0.000178413">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects empty string" time="0.000106288">
-        </testcase>
-        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects arbitrary string" time="0.000168636">
+        <testcase classname="src/test/unit/context.test.tsx" name="AppContext — fp helper &gt; formats CNY with default currency" time="0.005883765">
         </testcase>
     </testsuite>
-    <testsuite name="src/test/unit/store.test.ts" timestamp="2026-04-06T22:31:58.110Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="32" failures="0" errors="0" skipped="0" time="0.041460918">
-        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats NZD with symbol and no decimal" time="0.025450403">
+    <testsuite name="src/test/unit/schemas.test.ts" timestamp="2026-04-06T23:42:55.053Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="22" failures="0" errors="0" skipped="0" time="0.019456501">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; accepts a fully valid payload" time="0.006149364">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats CNY with ¥ symbol" time="0.000540703">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects empty name" time="0.004035517">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats USD with US$ symbol" time="0.000360504">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects malformed email" time="0.000461012">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats large CNY amount with thousand separator" time="0.000305718">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects phone shorter than 7 chars" time="0.000713266">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="PROMO_CODES definitions &gt; WELCOME10 is a 10% percent discount with no minimum" time="0.00104237">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects invalid paymentMethod" time="0.000503512">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="PROMO_CODES definitions &gt; LUXURY20 requires minAmount of 500" time="0.001123366">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; accepts all three valid payment methods" time="0.000646485">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="PROMO_CODES definitions &gt; ALPACA50 is a fixed $50 discount" time="0.000278935">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; rejects giftMessage longer than 100 chars" time="0.000571878">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; WELCOME10 gives 10% of cart total" time="0.000359158">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; accepts giftMessage of exactly 100 chars" time="0.000196053">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; WELCOME10 is case-insensitive" time="0.00067909">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; optional address fields can be omitted" time="0.000528692">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; LUXURY20 fails when cart is below 500" time="0.000874905">
+        <testcase classname="src/test/unit/schemas.test.ts" name="checkoutSchema &gt; defaults isGift to false when omitted" time="0.00019454">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; LUXURY20 applies when cart is exactly 500" time="0.000352288">
+        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; accepts valid contact form data" time="0.000298176">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; LUXURY20 applies 20% when cart exceeds minimum" time="0.000145312">
+        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; rejects message shorter than 10 chars" time="0.000452057">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; ALPACA50 gives fixed 50 regardless of cart total" time="0.000249398">
+        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; rejects missing name" time="0.000199033">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; unknown code returns false" time="0.000182954">
+        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; rejects invalid email" time="0.000193532">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; single item × 1 in NZD" time="0.00028015">
+        <testcase classname="src/test/unit/schemas.test.ts" name="contactSchema &gt; allows optional phone and subject" time="0.000186024">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; single item × 2 doubles the total" time="0.000140131">
+        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; accepts PA-2025-001" time="0.000223547">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; two different items sum correctly in NZD" time="0.000138161">
+        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; accepts PA-2025-999" time="0.000182999">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; uses CNY prices when currency is CNY" time="0.000113848">
+        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects lowercase pa-2025-001" time="0.00011537">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; uses USD prices when currency is USD" time="0.000090851">
+        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects missing leading PA" time="0.000090791">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; empty cart total is 0" time="0.000197953">
+        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects wrong digit count in batch number" time="0.000135469">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; cart count sums quantities" time="0.000136086">
+        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects empty string" time="0.000072815">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="shipping threshold logic &gt; order below 500 NZD incurs shipping" time="0.000125135">
+        <testcase classname="src/test/unit/schemas.test.ts" name="batchCodeSchema &gt; rejects arbitrary string" time="0.000062125">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="shipping threshold logic &gt; order at exactly 500 NZD is free shipping" time="0.000139543">
+    </testsuite>
+    <testsuite name="src/test/unit/store.test.ts" timestamp="2026-04-06T23:42:55.059Z" hostname="sandbox-pool-fddcc4b7f-5b4vh" tests="32" failures="0" errors="0" skipped="0" time="0.033809916">
+        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats NZD with symbol and no decimal" time="0.019839307">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="shipping threshold logic &gt; duvet-classic at NZD$579 qualifies for free shipping" time="0.000146115">
+        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats CNY with ¥ symbol" time="0.00038026">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; has at least 8 products" time="0.000185665">
+        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats USD with US$ symbol" time="0.000244885">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; every product has prices for all three currencies" time="0.001080364">
+        <testcase classname="src/test/unit/store.test.ts" name="formatPrice &gt; formats large CNY amount with thousand separator" time="0.00029289">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; every product has a non-empty id" time="0.000554318">
+        <testcase classname="src/test/unit/store.test.ts" name="PROMO_CODES definitions &gt; WELCOME10 is a 10% percent discount with no minimum" time="0.000970584">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; duvet-classic exists and is featured" time="0.000208387">
+        <testcase classname="src/test/unit/store.test.ts" name="PROMO_CODES definitions &gt; LUXURY20 requires minAmount of 500" time="0.002267722">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; CNY prices are approximately 4.5× NZD prices" time="0.000687263">
+        <testcase classname="src/test/unit/store.test.ts" name="PROMO_CODES definitions &gt; ALPACA50 is a fixed $50 discount" time="0.000337739">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="exchange rates &gt; NZD base rate is 1" time="0.000156683">
+        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; WELCOME10 gives 10% of cart total" time="0.000364421">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="exchange rates &gt; CNY rate is 4.5" time="0.000133365">
+        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; WELCOME10 is case-insensitive" time="0.000539805">
         </testcase>
-        <testcase classname="src/test/unit/store.test.ts" name="exchange rates &gt; USD rate is 0.6" time="0.000089418">
+        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; LUXURY20 fails when cart is below 500" time="0.000339706">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; LUXURY20 applies when cart is exactly 500" time="0.000182652">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; LUXURY20 applies 20% when cart exceeds minimum" time="0.00013958">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; ALPACA50 gives fixed 50 regardless of cart total" time="0.000255192">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="applyPromo calculation &gt; unknown code returns false" time="0.000413346">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; single item × 1 in NZD" time="0.000269986">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; single item × 2 doubles the total" time="0.000150809">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; two different items sum correctly in NZD" time="0.000119405">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; uses CNY prices when currency is CNY" time="0.000093328">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; uses USD prices when currency is USD" time="0.000107405">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; empty cart total is 0" time="0.000104572">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="cart total calculation &gt; cart count sums quantities" time="0.00012636">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="shipping threshold logic &gt; order below 500 NZD incurs shipping" time="0.00010113">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="shipping threshold logic &gt; order at exactly 500 NZD is free shipping" time="0.000086907">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="shipping threshold logic &gt; duvet-classic at NZD$579 qualifies for free shipping" time="0.000106133">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; has at least 8 products" time="0.000210583">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; every product has prices for all three currencies" time="0.00103401">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; every product has a non-empty id" time="0.000377535">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; duvet-classic exists and is featured" time="0.000265094">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="product catalogue &gt; CNY prices are approximately 4.5× NZD prices" time="0.000768442">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="exchange rates &gt; NZD base rate is 1" time="0.000174977">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="exchange rates &gt; CNY rate is 4.5" time="0.000086117">
+        </testcase>
+        <testcase classname="src/test/unit/store.test.ts" name="exchange rates &gt; USD rate is 0.6" time="0.000102897">
         </testcase>
     </testsuite>
 </testsuites>
