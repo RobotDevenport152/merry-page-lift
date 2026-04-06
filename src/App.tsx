@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppProvider } from "@/contexts/AppContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 
 // Lazy-loaded routes for performance
@@ -27,7 +28,6 @@ const Compare = React.lazy(() => import("./pages/Compare"));
 const Returns = React.lazy(() => import("./pages/Returns"));
 const GrowerBatches = React.lazy(() => import("./pages/GrowerBatches"));
 const GrowerCredits = React.lazy(() => import("./pages/GrowerCredits"));
-const Wishlist = React.lazy(() => import("./pages/Wishlist"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -52,27 +52,76 @@ const App = () => (
         <BrowserRouter>
           <Suspense fallback={<PageLoader />}>
             <Routes>
+              {/* Public routes */}
               <Route path="/" element={<Index />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/order-success" element={<OrderSuccess />} />
               <Route path="/traceability" element={<Traceability />} />
-              <Route path="/admin" element={<Admin />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/growers-info" element={<GrowersInfo />} />
               <Route path="/wholesale" element={<Wholesale />} />
               <Route path="/china" element={<ChinaLanding />} />
+              <Route path="/compare" element={<Compare />} />
+              <Route path="/returns" element={<Returns />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/my-orders" element={<MyOrders />} />
-              <Route path="/compare" element={<Compare />} />
-              <Route path="/returns" element={<Returns />} />
-              <Route path="/grower/batches" element={<GrowerBatches />} />
-              <Route path="/grower/credits" element={<GrowerCredits />} />
-              <Route path="/wishlist" element={<Wishlist />} />
+
+              {/* P1 FIX: Auth-required routes — redirect to /login if not authenticated */}
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <Checkout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/order-success"
+                element={
+                  <ProtectedRoute>
+                    <OrderSuccess />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/my-orders"
+                element={
+                  <ProtectedRoute>
+                    <MyOrders />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* P1 FIX: Grower routes — require 'grower' role */}
+              <Route
+                path="/grower/batches"
+                element={
+                  <ProtectedRoute requiredRole="grower">
+                    <GrowerBatches />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/grower/credits"
+                element={
+                  <ProtectedRoute requiredRole="grower">
+                    <GrowerCredits />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* P1 FIX: Admin route — require 'admin' role */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <Admin />
+                  </ProtectedRoute>
+                }
+              />
+
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
