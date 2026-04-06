@@ -23,7 +23,7 @@ type OrderStatus = 'loading' | 'paid' | 'pending' | 'payment_failed' | 'not_foun
  * We poll up to ~10s before falling back to a "processing" message.
  */
 export default function OrderSuccessPage() {
-  const { locale } = useApp();
+  const { locale, clearCart } = useApp();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
 
@@ -60,6 +60,7 @@ export default function OrderSuccessPage() {
 
       if (status === 'paid' || status === 'processing' || status === 'shipped' || status === 'delivered') {
         setOrderStatus('paid');
+        clearCart(); // P0 FIX: clear cart so user can't accidentally re-order
       } else if (status === 'payment_failed') {
         setOrderStatus('payment_failed');
       } else {
@@ -89,6 +90,7 @@ export default function OrderSuccessPage() {
 
       if (data?.status === 'paid' || data?.status === 'processing') {
         setOrderStatus('paid');
+        clearCart();
       } else {
         setPollCount(c => c + 1);
       }

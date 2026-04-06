@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, ShoppingBag } from 'lucide-react';
-import WishlistButton from '@/components/WishlistButton';
+import { Search, ShoppingBag, Heart } from 'lucide-react';
 import { useApp } from '@/contexts/AppContext';
 import { type Product } from '@/lib/store';
 import { useProducts } from '@/hooks/useProducts';
+import { useWishlist } from '@/hooks/useWishlist';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
@@ -16,6 +16,7 @@ type SortKey = 'featured' | 'priceLow' | 'priceHigh' | 'name';
 
 export default function ShopPage() {
   const { t, locale, currency, fp, addToCart } = useApp();
+  const { toggle: toggleWishlist, isWishlisted } = useWishlist();
   const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('q') || '');
   const [debouncedSearch, setDebouncedSearch] = useState(search);
@@ -99,6 +100,7 @@ export default function ShopPage() {
           </div>
 
           {/* Gift Recommendation Banner */}
+          {/* P0 FIX: links now resolve slug → UUID at runtime using loaded dbProducts */}
           <div className="mb-8 bg-gold/5 border border-gold/20 rounded-lg p-5">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
@@ -109,19 +111,23 @@ export default function ShopPage() {
               </div>
               <div className="flex flex-wrap gap-2">
                 {([
-                  { labelZh: '送父母长辈', labelEn: 'For Parents', cat: 'duvet-premium' },
-                  { labelZh: '送伴侣', labelEn: 'For Partner', cat: 'duvet-luxury' },
-                  { labelZh: '送商务客户', labelEn: 'For Clients', cat: 'duvet-classic' },
-                  { labelZh: '送新生儿家庭', labelEn: 'For Newborn', cat: 'duvet-newborn' },
-                ] as const).map(opt => (
-                  <Link
-                    key={opt.cat}
-                    to={`/product/${opt.cat}`}
-                    className="px-3 py-1.5 bg-background border border-border rounded-sm text-xs font-body hover:border-gold hover:text-gold transition-colors whitespace-nowrap"
-                  >
-                    {locale === 'zh' ? opt.labelZh : opt.labelEn}
-                  </Link>
-                ))}
+                  { labelZh: '送父母长辈', labelEn: 'For Parents', slug: 'duvet-premium' },
+                  { labelZh: '送伴侣', labelEn: 'For Partner', slug: 'duvet-luxury' },
+                  { labelZh: '送商务客户', labelEn: 'For Clients', slug: 'duvet-classic' },
+                  { labelZh: '送新生儿家庭', labelEn: 'For Newborn', slug: 'duvet-newborn' },
+                ] as const).map(opt => {
+                  const product = dbProducts?.find((p: any) => p.slug === opt.slug);
+                  if (!product) return null;
+                  return (
+                    <Link
+                      key={opt.slug}
+                      to={`/product/${product.id}`}
+                      className="px-3 py-1.5 bg-background border border-border rounded-sm text-xs font-body hover:border-gold hover:text-gold transition-colors whitespace-nowrap"
+                    >
+                      {locale === 'zh' ? opt.labelZh : opt.labelEn}
+                    </Link>
+                  );
+                })}
               </div>
               <Link to="/compare" className="text-xs font-body text-gold hover:underline whitespace-nowrap flex-shrink-0">
                 {locale === 'zh' ? '查看系列对比 →' : 'Compare tiers →'}
@@ -191,9 +197,11 @@ export default function ShopPage() {
                             <span className="bg-destructive text-destructive-foreground px-4 py-2 rounded-sm text-sm font-body font-semibold">{locale === 'zh' ? '缺货' : 'Out of Stock'}</span>
                           </div>
                         )}
-                        {!outOfStock && product.stock < 10 && (
+                        {!outOfStock && product.stock <= 10 && (
                           <span className="absolute top-3 right-3 bg-destructive text-destructive-foreground text-[10px] px-2 py-1 rounded-full font-body">
-                            {locale === 'zh' ? `仅剩${product.stock}件` : `Only ${product.stock} left`}
+                            {product.stock <= 4
+                              ? (locale === 'zh' ? `仅剩${product.stock}件` : `Only ${product.stock} left`)
+                              : (locale === 'zh' ? '仅剩少量' : 'Low stock')}
                           </span>
                         )}
                       </div>
@@ -203,15 +211,21 @@ export default function ShopPage() {
                         <h3 className="font-display text-lg font-semibold mb-1 hover:text-gold transition-colors">{locale === 'zh' ? product.nameZh : product.nameEn}</h3>
                       </Link>
                       <p className="text-xs text-muted-foreground font-body mb-3 line-clamp-2">{locale === 'zh' ? product.descZh : product.descEn}</p>
-                      {!outOfStock && product.stock <= 15 && product.stock > 0 && (
-                        <p className="text-xs text-destructive font-body mb-2">
-                          {locale === 'zh' ? `仅剩 ${product.stock} 件 — 尽快下单` : `Only ${product.stock} left in stock — order soon`}
-                        </p>
-                      )}
                       <div className="flex items-center justify-between">
                         <span className="text-gold font-display text-xl font-semibold">{fp(product.prices[currency])}</span>
-                        <div className="flex gap-1.5">
-                          <WishlistButton productId={product.id} />
+                        <div className="flex items-center gap-1.5">
+                          {/* P1 FIX: Wishlist heart on card */}
+                          <button
+                            onClick={e => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              toggleWishlist(product.id);
+                            }}
+                            className="w-8 h-8 rounded-full flex items-center justify-center border border-border hover:border-gold transition-colors"
+                            aria-label={locale === 'zh' ? '收藏' : 'Wishlist'}
+                          >
+                            <Heart className={`w-3.5 h-3.5 transition-colors ${isWishlisted(product.id) ? 'fill-gold text-gold' : 'text-muted-foreground'}`} />
+                          </button>
                           <button
                             onClick={e => { e.stopPropagation(); handleAddToCart(product); }}
                             className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${outOfStock ? 'bg-muted text-muted-foreground cursor-not-allowed' : 'bg-primary text-primary-foreground hover:bg-gold'}`}
@@ -229,9 +243,34 @@ export default function ShopPage() {
           )}
 
           {!isLoading && filtered.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground font-body mb-4">{locale === 'zh' ? '未找到匹配的产品' : 'No products found'}</p>
-              <button onClick={() => { setSearch(''); setCategory('all'); }} className="text-gold hover:underline font-body text-sm">{locale === 'zh' ? '清除搜索' : 'Clear search'}</button>
+            <div className="text-center py-12">
+              <p className="text-muted-foreground font-body mb-2 text-lg">
+                {locale === 'zh' ? '未找到匹配的产品' : 'No products found'}
+              </p>
+              <p className="text-muted-foreground font-body text-sm mb-6">
+                {locale === 'zh' ? `"${debouncedSearch || category}" 没有结果，试试这些热门产品：` : `No results for "${debouncedSearch || category}". You might like:`}
+              </p>
+              <button
+                onClick={() => { setSearch(''); setCategory('all'); }}
+                className="text-gold hover:underline font-body text-sm mb-8 block mx-auto"
+              >
+                {locale === 'zh' ? '清除筛选，查看全部' : 'Clear filters — show all'}
+              </button>
+              {dbProducts && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-xl mx-auto text-left">
+                  {dbProducts.filter((p: any) => p.featured).slice(0, 3).map((p: any) => (
+                    <Link key={p.id} to={`/product/${p.id}`} className="group border border-border rounded-lg overflow-hidden hover:border-gold transition-colors">
+                      <div className="aspect-square overflow-hidden bg-card">
+                        <img src={p.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                      </div>
+                      <div className="p-3">
+                        <p className="font-body text-xs font-semibold truncate">{locale === 'zh' ? p.nameZh : p.nameEn}</p>
+                        <p className="text-gold font-display text-xs mt-0.5">{fp(p.prices[currency])}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </div>

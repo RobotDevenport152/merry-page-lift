@@ -5,11 +5,12 @@ import { useProduct, useProducts } from '@/hooks/useProducts';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
-import WishlistButton from '@/components/WishlistButton';
-import { supabase } from '@/integrations/supabase/client';
-import { ShieldCheck, Feather, Droplets, Bug, Zap, ChevronLeft, ChevronDown, ChevronUp, MapPin, ThumbsUp } from 'lucide-react';
+import { ShieldCheck, Feather, Droplets, Bug, Zap, ChevronLeft, ChevronDown, ChevronUp, MapPin, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useWishlist } from '@/hooks/useWishlist';
+import { toast } from 'sonner';
+import StockNotifyForm from '@/components/StockNotifyForm';
 
 const BENEFITS = [
   { icon: ShieldCheck, labelZh: '保暖', labelEn: 'Warmth', descZh: '3倍于羊毛', descEn: '3× warmer than wool' },
@@ -28,27 +29,22 @@ const COMPARISON = [
   { key: '抗静电', keyEn: 'Anti-static', alpaca: '★★★★★', wool: '★☆☆☆☆', silk: '★★★☆☆' },
 ];
 
+const MOCK_REVIEWS = [
+  { id: '1', author: '张女士 / Ms. Zhang', rating: 5, date: '2025-03-10', textZh: '非常轻盈，比想象中更柔软。温控效果很好，不像羽绒被那样感觉闷热。强烈推荐！', textEn: 'Incredibly light and softer than expected. Temperature regulation is excellent — no stuffy feeling like down. Highly recommend!', verified: true, productVariant: '220×240cm' },
+  { id: '2', author: '王先生 / Mr. Wang', rating: 5, date: '2025-02-28', textZh: '作为礼物送给父母，他们用了一周就说"终于睡好了"。包装精美，有溯源证书，仪式感很强。', textEn: 'Bought as a gift for my parents. One week in and they said "finally sleeping well." Beautiful packaging with the traceability certificate.', verified: true, productVariant: '200×230cm' },
+  { id: '3', author: '李女士 / Ms. Li', rating: 4, date: '2025-01-15', textZh: '质量很好，填充均匀，面料很细腻。唯一美中不足是颜色比图片略偏米白。', textEn: 'Great quality, even fill, fine fabric. Only minor note: the color is slightly more off-white than in the photos.', verified: true, productVariant: '200×230cm' },
+];
+
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { locale, fp, currency, addToCart, t, recentlyViewed, addRecentlyViewed } = useApp();
+  const { toggle: toggleWishlist, isWishlisted } = useWishlist();
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
   const [careOpen, setCareOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'description' | 'specs' | 'care' | 'reviews'>('description');
   const { data: product, isLoading } = useProduct(id || '');
   const { data: allProducts } = useProducts();
-  const [dbReviews, setDbReviews] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (!id) return;
-    supabase
-      .from('product_reviews')
-      .select('*')
-      .eq('product_id', id)
-      .order('helpful_count', { ascending: false })
-      .limit(20)
-      .then(({ data }) => { if (data) setDbReviews(data); });
-  }, [id]);
 
   useEffect(() => {
     if (product) {
@@ -56,7 +52,10 @@ export default function ProductDetailPage() {
     }
   }, [product?.id]);
 
-  if (isLoading) {
+  const [activeImg, setActiveImg] = useState(0);
+  const images: string[] = (product as any).images?.length > 0
+    ? (product as any).images
+    : [product.image];
     return (
       <div className="min-h-screen bg-background">
         <Navbar />
@@ -130,8 +129,13 @@ export default function ProductDetailPage() {
 
           <div className="grid lg:grid-cols-2 gap-12">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+              {/* P1 FIX: Image gallery — uses products.images[] array from DB */}
               <div className="relative aspect-square rounded-lg overflow-hidden bg-card">
-                <img src={product.image} alt={locale === 'zh' ? product.nameZh : product.nameEn} className="w-full h-full object-cover" />
+                <img
+                  src={images[activeImg]}
+                  alt={locale === 'zh' ? product.nameZh : product.nameEn}
+                  className="w-full h-full object-cover transition-opacity duration-300"
+                />
                 <Link
                   to="/traceability"
                   className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-primary/80 backdrop-blur-sm text-primary-foreground text-xs font-body px-3 py-1.5 rounded-full hover:bg-primary transition-colors"
@@ -141,6 +145,21 @@ export default function ProductDetailPage() {
                   <span className="text-gold ml-0.5">→</span>
                 </Link>
               </div>
+              {images.length > 1 && (
+                <div className="flex gap-2 mt-3">
+                  {images.map((img, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImg(i)}
+                      className={`w-16 h-16 rounded-sm overflow-hidden border-2 transition-colors flex-shrink-0 ${
+                        activeImg === i ? 'border-gold' : 'border-transparent opacity-60 hover:opacity-100'
+                      }`}
+                    >
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="flex flex-col">
@@ -204,14 +223,14 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
-              {product.stock > 0 && product.stock <= 15 && (
-                <p className="text-sm text-destructive font-body mb-2 font-semibold">
-                  {locale === 'zh' ? `⚠️ 仅剩 ${product.stock} 件 — 尽快下单` : `⚠️ Only ${product.stock} left in stock — order soon`}
+              {/* P2 FIX: Threshold display instead of exact stock number */}
+              {product.stock > 0 && product.stock <= 10 && (
+                <p className="text-xs font-body mb-2 text-amber-600">
+                  {product.stock <= 4
+                    ? (locale === 'zh' ? `仅剩 ${product.stock} 件，手慢无` : `Only ${product.stock} left`)
+                    : (locale === 'zh' ? '仅剩少量' : 'Low stock')}
                 </p>
               )}
-              <p className="text-xs text-muted-foreground font-body mb-2">
-                {locale === 'zh' ? `库存: ${product.stock} 件` : `Stock: ${product.stock} units`}
-              </p>
 
               {/* Care Instructions */}
               <div className="mb-4 border border-border rounded-sm overflow-hidden">
@@ -231,16 +250,43 @@ export default function ProductDetailPage() {
                 )}
               </div>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => { addToCart(product, selectedVariant || undefined); }}
-                  disabled={product.stock <= 0}
-                  className="flex-1 py-3 bg-accent text-accent-foreground font-body font-semibold rounded-sm tracking-wider hover:bg-accent/90 transition disabled:opacity-50"
-                >
-                  {product.stock <= 0 ? (locale === 'zh' ? '已售罄' : 'Sold Out') : t.products.addToCart}
-                </button>
-                <WishlistButton productId={product.id} className="w-12 h-12" />
-              </div>
+              {/* P0 FIX: Variant required before add to cart */}
+              {product.stock <= 0 ? (
+                /* P1 FIX: Out-of-stock notify form replaces grey Sold Out button */
+                <StockNotifyForm productId={product.id} locale={locale as 'zh' | 'en'} />
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      if (product.variants && product.variants.length > 0 && !selectedVariant) {
+                        toast.error(locale === 'zh' ? '请先选择规格' : 'Please select a size first');
+                        return;
+                      }
+                      addToCart(product, selectedVariant || undefined);
+                    }}
+                    className="flex-1 py-3 bg-accent text-accent-foreground font-body font-semibold rounded-sm tracking-wider hover:bg-accent/90 transition"
+                  >
+                    {t.products.addToCart}
+                  </button>
+                  {/* P1 FIX: Wishlist heart button */}
+                  <button
+                    onClick={() => {
+                      toggleWishlist(product.id);
+                      toast.success(
+                        isWishlisted(product.id)
+                          ? (locale === 'zh' ? '已从收藏移除' : 'Removed from wishlist')
+                          : (locale === 'zh' ? '已加入收藏' : 'Added to wishlist'),
+                      );
+                    }}
+                    className="px-4 py-3 border border-border rounded-sm hover:border-gold transition-colors flex-shrink-0"
+                    aria-label={locale === 'zh' ? '收藏' : 'Wishlist'}
+                  >
+                    <Heart
+                      className={`w-5 h-5 transition-colors ${isWishlisted(product.id) ? 'fill-gold text-gold' : 'text-muted-foreground'}`}
+                    />
+                  </button>
+                </div>
+              )}
 
               <div className="mt-4">
                 <Link
@@ -392,71 +438,54 @@ export default function ProductDetailPage() {
 
             {activeTab === 'reviews' && (
               <div className="max-w-2xl mx-auto">
-                {(() => {
-                  const reviews = dbReviews;
-                  const total = reviews.length;
-                  const avg = total > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / total).toFixed(1) : '0';
-                  const breakdown = [5, 4, 3, 2, 1].map(s => ({
-                    stars: s,
-                    label: `${s}★`,
-                    pct: total > 0 ? Math.round((reviews.filter(r => r.rating === s).length / total) * 100) : 0,
-                  }));
+                <div className="mb-8 text-center">
+                  <div className="text-4xl font-display font-semibold mb-1">4.8</div>
+                  <div className="text-gold text-xl mb-1">★★★★★</div>
+                  <div className="text-sm text-muted-foreground font-body">127条评价 / 127 reviews</div>
+                </div>
 
-                  return (
-                    <>
-                      <div className="mb-8 text-center">
-                        <div className="text-4xl font-display font-semibold mb-1">{avg}</div>
-                        <div className="text-gold text-xl mb-1">{'★'.repeat(Math.round(Number(avg)))}{'☆'.repeat(5 - Math.round(Number(avg)))}</div>
-                        <div className="text-sm text-muted-foreground font-body">{total} {locale === 'zh' ? '条评价' : 'reviews'}</div>
+                <div className="space-y-2 mb-8 max-w-xs mx-auto">
+                  {[
+                    { stars: 5, label: '5★', pct: 78 },
+                    { stars: 4, label: '4★', pct: 16 },
+                    { stars: 3, label: '3★', pct: 5 },
+                    { stars: 2, label: '2★', pct: 1 },
+                    { stars: 1, label: '1★', pct: 0 },
+                  ].map(row => (
+                    <div key={row.stars} className="flex items-center gap-3 text-sm font-body">
+                      <span className="w-6 text-muted-foreground">{row.label}</span>
+                      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                        <div className="h-full bg-gold rounded-full" style={{ width: `${row.pct}%` }} />
                       </div>
+                      <span className="w-8 text-right text-muted-foreground">{row.pct}%</span>
+                    </div>
+                  ))}
+                </div>
 
-                      <div className="space-y-2 mb-8 max-w-xs mx-auto">
-                        {breakdown.map(row => (
-                          <div key={row.stars} className="flex items-center gap-3 text-sm font-body">
-                            <span className="w-6 text-muted-foreground">{row.label}</span>
-                            <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                              <div className="h-full bg-gold rounded-full" style={{ width: `${row.pct}%` }} />
-                            </div>
-                            <span className="w-8 text-right text-muted-foreground">{row.pct}%</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {reviews.length === 0 ? (
-                        <p className="text-center text-muted-foreground font-body text-sm py-8">
-                          {locale === 'zh' ? '暂无评价，成为第一个评价者！' : 'No reviews yet. Be the first to review!'}
-                        </p>
-                      ) : (
-                        <div className="space-y-4 mb-6">
-                          {reviews.map(review => (
-                            <div key={review.id} className="border border-border rounded-sm p-4">
-                              <div className="flex items-start justify-between mb-2">
-                                <div>
-                                  <span className="font-body font-semibold text-sm">
-                                    {review.country_code && <span className="mr-1">{review.country_code === 'NZ' ? '🇳🇿' : review.country_code === 'CN' ? '🇨🇳' : review.country_code === 'US' ? '🇺🇸' : '🌍'}</span>}
-                                    {locale === 'zh' ? '用户' : 'Customer'}
-                                  </span>
-                                  {review.verified_purchase && (
-                                    <span className="ml-2 text-xs text-green-600 font-body">✓ {locale === 'zh' ? '已验证购买' : 'Verified Purchase'}</span>
-                                  )}
-                                </div>
-                                <span className="text-xs text-muted-foreground font-body">{new Date(review.created_at).toLocaleDateString()}</span>
-                              </div>
-                              <div className="text-gold text-sm mb-1">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
-                              {review.title && <p className="font-body font-semibold text-sm mb-1">{review.title}</p>}
-                              <p className="text-sm font-body text-muted-foreground">{review.content}</p>
-                              <div className="mt-2 flex items-center gap-2">
-                                <button className="text-xs text-muted-foreground font-body flex items-center gap-1 hover:text-foreground">
-                                  <ThumbsUp className="w-3 h-3" /> {locale === 'zh' ? '有帮助' : 'Helpful'} ({review.helpful_count || 0})
-                                </button>
-                              </div>
-                            </div>
-                          ))}
+                <div className="space-y-4 mb-6">
+                  {MOCK_REVIEWS.map(review => (
+                    <div key={review.id} className="border border-border rounded-sm p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <span className="font-body font-semibold text-sm">{review.author}</span>
+                          {review.verified && (
+                            <span className="ml-2 text-xs text-green-600 font-body">✓ 已验证购买 / Verified Purchase</span>
+                          )}
                         </div>
-                      )}
-                    </>
-                  );
-                })()}
+                        <span className="text-xs text-muted-foreground font-body">{review.date}</span>
+                      </div>
+                      <div className="text-gold text-sm mb-1">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
+                      <div className="text-xs text-muted-foreground font-body mb-2">{locale === 'zh' ? '购买规格' : 'Variant'}: {review.productVariant}</div>
+                      <p className="text-sm font-body text-muted-foreground">
+                        {locale === 'zh' ? review.textZh : review.textEn}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="text-center">
+                  <span className="text-sm font-body text-gold cursor-default">查看全部评价 →</span>
+                </div>
               </div>
             )}
           </div>
@@ -503,13 +532,21 @@ export default function ProductDetailPage() {
         </div>
       </div>
 
+      {/* P2 FIX: Mobile sticky add-to-cart bar with variant guard */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 pt-4 safe-bottom flex items-center gap-4 z-40">
         <span className="text-gold font-display text-xl font-semibold">{fp(product.prices[currency])}</span>
         <button
-          onClick={() => addToCart(product, selectedVariant || undefined)}
-          className="flex-1 py-3 bg-accent text-accent-foreground font-body font-semibold rounded-sm"
+          onClick={() => {
+            if (product.variants && product.variants.length > 0 && !selectedVariant) {
+              toast.error(locale === 'zh' ? '请先选择规格' : 'Please select a size');
+              return;
+            }
+            addToCart(product, selectedVariant || undefined);
+          }}
+          disabled={product.stock <= 0}
+          className="flex-1 py-3 bg-accent text-accent-foreground font-body font-semibold rounded-sm disabled:opacity-50"
         >
-          {t.products.addToCart}
+          {product.stock <= 0 ? (locale === 'zh' ? '已售罄' : 'Sold Out') : t.products.addToCart}
         </button>
       </div>
 

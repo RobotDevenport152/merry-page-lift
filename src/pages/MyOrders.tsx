@@ -34,7 +34,15 @@ interface Order {
   currency: string;
   created_at: string;
   shipping_name: string;
-  order_items: { product_name: string; variant: string | null; quantity: number; unit_price: number }[];
+  tracking_number?: string | null;   // P1: physical shipment tracking
+  carrier?: string | null;
+  order_items: {
+    product_name: string;
+    variant: string | null;
+    quantity: number;
+    unit_price: number;
+    batch_code?: string | null;      // P2: traceability link
+  }[];
 }
 
 export default function MyOrdersPage() {
@@ -124,10 +132,61 @@ export default function MyOrdersPage() {
                     <div className="border-t border-border p-5 space-y-3">
                       {order.order_items?.map((item, idx) => (
                         <div key={idx} className="flex justify-between text-sm font-body">
-                          <span>{item.product_name} {item.variant ? `(${item.variant})` : ''} ×{item.quantity}</span>
+                          <div>
+                            <span>{item.product_name} {item.variant ? `(${item.variant})` : ''} ×{item.quantity}</span>
+                            {/* P2 FIX: Traceability link per item */}
+                            {item.batch_code && (
+                              <a
+                                href={`/traceability?code=${item.batch_code}`}
+                                className="block text-xs text-gold hover:underline mt-0.5"
+                              >
+                                {locale === 'zh' ? '追溯来源 →' : 'Trace origin →'}
+                              </a>
+                            )}
+                          </div>
                           <span>{fp(Number(item.unit_price) * item.quantity)}</span>
                         </div>
                       ))}
+
+                      {/* P1 FIX: Tracking number when shipped */}
+                      {(order.status === 'shipped' || order.status === 'delivered') && (
+                        <div className="pt-3 border-t border-border">
+                          {order.tracking_number ? (
+                            <div className="flex items-center gap-2 text-sm font-body">
+                              <span className="text-muted-foreground">
+                                {locale === 'zh' ? '快递单号：' : 'Tracking:'}
+                              </span>
+                              <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded">
+                                {order.carrier && `${order.carrier} · `}{order.tracking_number}
+                              </span>
+                              {order.carrier === 'NZ Post' && (
+                                <a
+                                  href={`https://www.nzpost.co.nz/tools/tracking/item/${order.tracking_number}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-gold text-xs hover:underline"
+                                >
+                                  {locale === 'zh' ? '追踪包裹 →' : 'Track →'}
+                                </a>
+                              )}
+                              {order.carrier === 'DHL' && (
+                                <a
+                                  href={`https://www.dhl.com/cn-zh/home/tracking.html?tracking-id=${order.tracking_number}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-gold text-xs hover:underline"
+                                >
+                                  {locale === 'zh' ? '追踪包裹 →' : 'Track →'}
+                                </a>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-muted-foreground font-body">
+                              {locale === 'zh' ? '快递单号待更新，请稍候' : 'Tracking number will be updated soon'}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </motion.div>
