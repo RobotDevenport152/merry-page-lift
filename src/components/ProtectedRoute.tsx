@@ -44,7 +44,7 @@ export default function ProtectedRoute({
         setHasRole(!!data);
         setRoleChecked(true);
       })
-      .catch(() => {
+      .then(undefined, () => {
         setHasRole(false);
         setRoleChecked(true);
       });

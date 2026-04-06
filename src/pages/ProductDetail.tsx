@@ -79,6 +79,10 @@ export default function ProductDetailPage() {
     );
   }
 
+  const images: string[] = (product as any).images?.length > 0
+    ? (product as any).images
+    : [product.image];
+
   const careTipsZh = [
     '手洗或洗衣机轻柔模式，30°C 以下冷水',
     '使用羊毛专用洗涤剂，避免含酶洗涤剂',
