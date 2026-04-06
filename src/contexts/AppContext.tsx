@@ -1,26 +1,15 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { type Locale, translations, type TranslationKey } from '@/lib/i18n';
-import { type Currency, type CartItem, type Product, PROMO_CODES, formatPrice } from '@/lib/store';
+import { type Locale, translations } from '@/lib/i18n';
+import { CartProvider, useCart } from '@/contexts/CartContext';
+
+// P2 FIX: t is now strongly typed — no more 't: any'.
+// Consumers get full autocomplete: t.nav.home, t.checkout.total, etc.
+type Translations = typeof translations[Locale];
 
 interface AppContextType {
   locale: Locale;
   setLocale: (l: Locale) => void;
-  t: any;
-  currency: Currency;
-  setCurrency: (c: Currency) => void;
-  cart: CartItem[];
-  addToCart: (product: Product, variant?: string) => void;
-  removeFromCart: (productId: string) => void;
-  updateQuantity: (productId: string, qty: number) => void;
-  cartTotal: number;
-  cartCount: number;
-  promoCode: string;
-  setPromoCode: (code: string) => void;
-  promoDiscount: number;
-  applyPromo: (code: string) => boolean;
-  cartOpen: boolean;
-  setCartOpen: (open: boolean) => void;
-  fp: (amount: number) => string;
+  t: Translations;
   recentlyViewed: string[];
   addRecentlyViewed: (id: string) => void;
 }
@@ -28,12 +17,14 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState<Locale>('zh');
-  const [currency, setCurrency] = useState<Currency>('CNY');
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [promoCode, setPromoCode] = useState('');
-  const [promoDiscount, setPromoDiscount] = useState(0);
-  const [cartOpen, setCartOpen] = useState(false);
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    try {
+      return (localStorage.getItem('pa-locale') as Locale) ?? 'zh';
+    } catch {
+      return 'zh';
+    }
+  });
+
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>(() => {
     try {
       const stored = localStorage.getItem('pa-recently-viewed');
@@ -43,54 +34,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   });
 
-  const t = translations[locale];
-
-  const addToCart = useCallback((product: Product, variant?: string) => {
-    setCart(prev => {
-      const existing = prev.find(i => i.product.id === product.id && i.variant === variant);
-      if (existing) {
-        return prev.map(i =>
-          i.product.id === product.id && i.variant === variant
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
-        );
-      }
-      return [...prev, { product, quantity: 1, variant }];
-    });
-    setCartOpen(true);
+  const setLocale = useCallback((l: Locale) => {
+    setLocaleState(l);
+    localStorage.setItem('pa-locale', l);
   }, []);
-
-  const removeFromCart = useCallback((productId: string) => {
-    setCart(prev => prev.filter(i => i.product.id !== productId));
-  }, []);
-
-  const updateQuantity = useCallback((productId: string, qty: number) => {
-    if (qty <= 0) {
-      setCart(prev => prev.filter(i => i.product.id !== productId));
-    } else {
-      setCart(prev => prev.map(i =>
-        i.product.id === productId ? { ...i, quantity: qty } : i
-      ));
-    }
-  }, []);
-
-  const cartTotal = cart.reduce((sum, item) => sum + item.product.prices[currency] * item.quantity, 0);
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  const applyPromo = useCallback((code: string) => {
-    const promo = PROMO_CODES[code.toUpperCase()];
-    if (!promo) return false;
-    if (promo.minAmount && cartTotal < promo.minAmount) return false;
-    if (promo.type === 'percent') {
-      setPromoDiscount(cartTotal * promo.discount / 100);
-    } else {
-      setPromoDiscount(promo.discount);
-    }
-    setPromoCode(code.toUpperCase());
-    return true;
-  }, [cartTotal]);
-
-  const fp = useCallback((amount: number) => formatPrice(amount, currency), [currency]);
 
   const addRecentlyViewed = useCallback((id: string) => {
     setRecentlyViewed(prev => {
@@ -103,21 +50,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('pa-recently-viewed', JSON.stringify(recentlyViewed));
   }, [recentlyViewed]);
 
+  const t: Translations = translations[locale];
+
   return (
-    <AppContext.Provider value={{
-      locale, setLocale, t, currency, setCurrency,
-      cart, addToCart, removeFromCart, updateQuantity,
-      cartTotal, cartCount, promoCode, setPromoCode,
-      promoDiscount, applyPromo, cartOpen, setCartOpen, fp,
-      recentlyViewed, addRecentlyViewed,
-    }}>
-      {children}
+    <AppContext.Provider value={{ locale, setLocale, t, recentlyViewed, addRecentlyViewed }}>
+      {/* CartProvider is nested here so cart state is isolated from locale re-renders */}
+      <CartProvider>
+        {children}
+      </CartProvider>
     </AppContext.Provider>
   );
 }
 
 export function useApp() {
-  const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useApp must be used within AppProvider');
-  return ctx;
+  const appCtx = useContext(AppContext);
+  if (!appCtx) throw new Error('useApp must be used within AppProvider');
+  const cartCtx = useCart();
+
+  // Backward-compatibility shim: merges both contexts.
+  // Existing components that call useApp() keep working unchanged.
+  // For new components, prefer calling useCart() and useApp() separately
+  // so re-renders are properly isolated.
+  return { ...appCtx, ...cartCtx };
 }
