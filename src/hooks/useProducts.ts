@@ -1,6 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import type { Currency } from '@/lib/store';
+import type { Currency, ProductCategory } from '@/lib/store';
+
+export interface ProductVariant {
+  name?: string;
+  label?: string;
+  value?: string;
+}
 
 export interface DbProduct {
   id: string;
