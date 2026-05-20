@@ -12,7 +12,7 @@ import { dbToLegacyProduct, type DbProduct } from '@/hooks/useProducts';
 export default function WishlistPage() {
   const { locale, currency, fp, addToCart } = useApp();
   const { user } = useAuth();
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<ReturnType<typeof dbToLegacyProduct>[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
