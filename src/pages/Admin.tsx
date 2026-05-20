@@ -4,7 +4,7 @@ import { products } from '@/lib/store';
 import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 import SEOHead from '@/components/SEOHead';
-import { Package, ShoppingCart, AlertTriangle, Users, BarChart3, Download, CheckSquare, TrendingUp, TrendingDown } from 'lucide-react';
+import { Package, ShoppingCart, AlertTriangle, Users, BarChart3, Download, CheckSquare, TrendingUp, TrendingDown, type LucideIcon } from 'lucide-react';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';
 
 type AdminTab = 'dashboard' | 'products' | 'orders' | 'inventory' | 'users';
@@ -58,7 +58,7 @@ export default function AdminPage() {
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
-  const tabs: { key: AdminTab; label: string; icon: any }[] = [
+  const tabs: { key: AdminTab; label: string; icon: LucideIcon }[] = [
     { key: 'dashboard', label: locale === 'zh' ? '数据看板' : 'Dashboard', icon: BarChart3 },
     { key: 'products', label: locale === 'zh' ? '产品管理' : 'Products', icon: Package },
     { key: 'orders', label: locale === 'zh' ? '订单看板' : 'Orders', icon: ShoppingCart },

@@ -260,7 +260,7 @@ export default function HeroSection() {
             <p className="text-primary-foreground/60 font-body text-sm">{t.process.subtitle}</p>
           </div>
           <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {t.process.steps.map((step: any, i: number) => (
+            {t.process.steps.map((step: { title: string; desc: string }, i: number) => (
               <div key={i} className="text-center">
                 <div className="w-12 h-12 rounded-full border border-gold/40 flex items-center justify-center mx-auto mb-4">
                   <span className="font-display text-gold text-lg font-semibold">{String(i + 1).padStart(2, '0')}</span>
@@ -284,7 +284,7 @@ export default function HeroSection() {
             <h2 className="font-display text-3xl md:text-5xl mt-4">{t.credentials.title}</h2>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[t.credentials.fernmark, t.credentials.nzmade, t.credentials.iaa, t.credentials.hurun].map((cred: any, i: number) => (
+            {[t.credentials.fernmark, t.credentials.nzmade, t.credentials.iaa, t.credentials.hurun].map((cred: { title: string; desc: string }, i: number) => (
               <div key={i} className="bg-card rounded-lg p-6 border border-border hover:border-gold/30 transition-colors">
                 <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center mb-4">
                   <span className="text-gold font-display font-bold">{['🏅', '🇳🇿', '🦙', '🏆'][i]}</span>

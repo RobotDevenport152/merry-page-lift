@@ -2,6 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Currency } from '@/lib/store';
 
+export interface ProductVariant {
+  name?: string;
+  label?: string;
+  value?: string;
+}
+
 export interface DbProduct {
   id: string;
   slug: string;
@@ -15,7 +21,7 @@ export interface DbProduct {
   price_nzd: number;
   price_cny: number;
   price_usd: number;
-  variants: any;
+  variants: ProductVariant[] | null;
   stock: number;
   rating: number | null;
   review_count: number | null;
@@ -34,12 +40,13 @@ export function dbToLegacyProduct(p: DbProduct) {
     nameZh: p.name_zh,
     descEn: p.description_en || '',
     descZh: p.description_zh || '',
-    category: p.category as any,
+    category: p.category as 'bedding' | 'outerwear' | 'accessories',
     prices: { NZD: Number(p.price_nzd), CNY: Number(p.price_cny), USD: Number(p.price_usd) } as Record<Currency, number>,
     image: p.image || '/placeholder.svg',
+    images: p.images ?? [],
     badge: p.is_featured ? 'Featured' : undefined,
     variants: Array.isArray(p.variants)
-      ? p.variants.map((v: any) => ({ label: v.name || v.label, value: v.name || v.value }))
+      ? p.variants.map((v: ProductVariant) => ({ label: v.name || v.label || '', value: v.name || v.value || '' }))
       : undefined,
     stock: p.stock,
     featured: p.is_featured ?? false,

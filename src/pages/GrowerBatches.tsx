@@ -65,7 +65,15 @@ export default function GrowerBatchesPage() {
         .eq('grower_user_id', user!.id)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data ?? []).map((d: any) => ({
+      type FiberBatchRow = {
+        batch_code: string;
+        created_at: string;
+        weight_kg: number | null;
+        fiber_grade: string | null;
+        status: string | null;
+        payout: number | null;
+      };
+      return (data ?? []).map((d: FiberBatchRow) => ({
         batch_code: d.batch_code,
         created_at: d.created_at,
         weight_kg: d.weight_kg ?? 0,

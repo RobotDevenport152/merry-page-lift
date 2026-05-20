@@ -54,7 +54,7 @@ test.describe('Grower RLS — fiber_batches isolation', () => {
 
     // Inject a script that queries fiber_batches and returns the result
     const result = await page.evaluate(async () => {
-      // @ts-ignore — accessing window globals from app bundle
+      // @ts-expect-error — accessing window globals from app bundle
       const { supabase } = await import('/src/integrations/supabase/client.ts').catch(() => ({ supabase: null }));
       if (!supabase) return { error: 'supabase not accessible', data: null };
 
@@ -69,7 +69,7 @@ test.describe('Grower RLS — fiber_batches isolation', () => {
     // If the query returns data, verify isolation
     if (result.data && Array.isArray(result.data) && result.data.length > 0) {
       const growerSession = await page.evaluate(async () => {
-        // @ts-ignore
+        // @ts-expect-error -- dynamic import via Vite path
         const { supabase } = await import('/src/integrations/supabase/client.ts').catch(() => ({ supabase: null }));
         if (!supabase) return null;
         const { data } = await supabase.auth.getSession();
@@ -91,7 +91,7 @@ test.describe('Grower RLS — fiber_batches isolation', () => {
     await loginAs(page, 'regular');
 
     const result = await page.evaluate(async () => {
-      // @ts-ignore
+      // @ts-expect-error -- dynamic import via Vite path
       const { supabase } = await import('/src/integrations/supabase/client.ts').catch(() => ({ supabase: null }));
       if (!supabase) return { data: null, error: 'supabase not accessible' };
 

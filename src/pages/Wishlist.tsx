@@ -12,7 +12,7 @@ import { dbToLegacyProduct, type DbProduct } from '@/hooks/useProducts';
 export default function WishlistPage() {
   const { locale, currency, fp, addToCart } = useApp();
   const { user } = useAuth();
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<ReturnType<typeof dbToLegacyProduct>[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function WishlistPage() {
         .select('product_id, products(*)')
         .eq('user_id', user.id);
       if (data) {
-        setProducts(data.map((w: any) => dbToLegacyProduct(w.products as DbProduct)));
+        setProducts(data.map((w) => dbToLegacyProduct(w.products as unknown as DbProduct)));
       }
       setLoading(false);
     })();

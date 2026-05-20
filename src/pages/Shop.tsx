@@ -38,12 +38,12 @@ export default function ShopPage() {
 
   const filtered = useMemo(() => {
     if (!dbProducts) return [];
-    let list = [...dbProducts].filter(p => {
+    const list = [...dbProducts].filter(p => {
       const name = locale === 'zh' ? p.nameZh : p.nameEn;
       const desc = locale === 'zh' ? p.descZh : p.descEn;
       const q = debouncedSearch.toLowerCase();
       const matchSearch = !q || name.toLowerCase().includes(q) || desc.toLowerCase().includes(q);
-      const matchCat = category === 'all' || p.category === category;
+      const matchCat = category === 'all' || (p.category as string) === category;
       return matchSearch && matchCat;
     });
 
@@ -116,7 +116,7 @@ export default function ShopPage() {
                   { labelZh: '送商务客户', labelEn: 'For Clients', slug: 'duvet-classic' },
                   { labelZh: '送新生儿家庭', labelEn: 'For Newborn', slug: 'duvet-newborn' },
                 ] as const).map(opt => {
-                  const product = dbProducts?.find((p: any) => p.slug === opt.slug);
+                  const product = dbProducts?.find(p => p.slug === opt.slug);
                   if (!product) return null;
                   return (
                     <Link
@@ -258,7 +258,7 @@ export default function ShopPage() {
               </button>
               {dbProducts && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-xl mx-auto text-left">
-                  {dbProducts.filter((p: any) => p.featured).slice(0, 3).map((p: any) => (
+                  {dbProducts.filter(p => p.featured).slice(0, 3).map(p => (
                     <Link key={p.id} to={`/product/${p.id}`} className="group border border-border rounded-lg overflow-hidden hover:border-gold transition-colors">
                       <div className="aspect-square overflow-hidden bg-card">
                         <img src={p.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />

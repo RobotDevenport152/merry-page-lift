@@ -26,8 +26,9 @@ export default function LoginPage() {
       if (error) throw error;
       toast.success(locale === 'zh' ? '登录成功！' : 'Logged in successfully!');
       navigate('/');
-    } catch (err: any) {
-      toast.error(err.message || (locale === 'zh' ? '登录失败' : 'Login failed'));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '';
+      toast.error(msg || (locale === 'zh' ? '登录失败' : 'Login failed'));
     } finally {
       setLoading(false);
     }

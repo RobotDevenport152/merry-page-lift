@@ -79,8 +79,9 @@ export default function ProductDetailPage() {
     );
   }
 
-  const images: string[] = (product as any).images?.length > 0
-    ? (product as any).images
+  const images: string[] = product.images && product.images.length > 0
+    ? product.images
+
     : [product.image];
 
   const careTipsZh = [

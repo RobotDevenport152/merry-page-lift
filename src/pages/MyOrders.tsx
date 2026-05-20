@@ -60,7 +60,7 @@ export default function MyOrdersPage() {
         .select('*, order_items(*)')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-      if (!error && data) setOrders(data as any);
+      if (!error && data) setOrders(data as unknown as Order[]);
       setLoading(false);
     };
     fetchOrders();
