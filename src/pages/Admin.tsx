@@ -58,7 +58,7 @@ export default function AdminPage() {
   const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
-  const tabs: { key: AdminTab; label: string; icon: any }[] = [
+  const tabs: { key: AdminTab; label: string; icon: LucideIcon }[] = [
     { key: 'dashboard', label: locale === 'zh' ? '数据看板' : 'Dashboard', icon: BarChart3 },
     { key: 'products', label: locale === 'zh' ? '产品管理' : 'Products', icon: Package },
     { key: 'orders', label: locale === 'zh' ? '订单看板' : 'Orders', icon: ShoppingCart },
