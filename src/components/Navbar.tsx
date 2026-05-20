@@ -75,7 +75,7 @@ export default function Navbar() {
             value={currency}
             onChange={e => setCurrency(e.target.value as Currency)}
             aria-label="Currency"
-            className="bg-primary text-primary-foreground text-xs border border-primary-foreground/20 rounded px-2 py-1 font-body cursor-pointer"
+            className="shrink-0 min-w-[60px] bg-primary text-primary-foreground text-xs border border-primary-foreground/20 rounded px-2 py-1 font-body cursor-pointer"
           >
             {currencies.map(c => (
               <option key={c} value={c} className="bg-primary text-primary-foreground">{c}</option>
