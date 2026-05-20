@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 const SYSTEM_PROMPT = `You are the customer assistant for Pacific Alpacas, a New Zealand luxury alpaca bedding brand.
