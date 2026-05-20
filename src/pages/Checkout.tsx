@@ -107,7 +107,7 @@ export default function CheckoutPage() {
         // WeChat / Alipay — placeholder until those integrations are built
         toast.info(locale === 'zh' ? '该支付方式暂未开通，请选择信用卡支付' : 'This payment method is not available yet. Please use credit card.');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Checkout error:', err);
       toast.error(locale === 'zh' ? '支付失败，请重试' : 'Payment failed, please try again');
     } finally {
