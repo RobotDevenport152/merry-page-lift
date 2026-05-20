@@ -21,7 +21,7 @@ export interface DbProduct {
   price_nzd: number;
   price_cny: number;
   price_usd: number;
-  variants: any;
+  variants: ProductVariant[] | null;
   stock: number;
   rating: number | null;
   review_count: number | null;
