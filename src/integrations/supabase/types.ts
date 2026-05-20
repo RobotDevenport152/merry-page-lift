@@ -445,6 +445,39 @@ export type Database = {
         }
         Relationships: []
       }
+      sleep_assessments: {
+        Row: {
+          answers: Json
+          converted: boolean
+          created_at: string
+          id: string
+          reason_en: string | null
+          reason_zh: string | null
+          recommended_products: string[]
+          user_id: string | null
+        }
+        Insert: {
+          answers: Json
+          converted?: boolean
+          created_at?: string
+          id?: string
+          reason_en?: string | null
+          reason_zh?: string | null
+          recommended_products?: string[]
+          user_id?: string | null
+        }
+        Update: {
+          answers?: Json
+          converted?: boolean
+          created_at?: string
+          id?: string
+          reason_en?: string | null
+          reason_zh?: string | null
+          recommended_products?: string[]
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       stock_notifications: {
         Row: {
           created_at: string
