@@ -41,7 +41,7 @@ export default function RegisterPage() {
       navigate('/login');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : '';
-      toast.error(err.message || (locale === 'zh' ? '注册失败' : 'Registration failed'));
+      toast.error(msg || (locale === 'zh' ? '注册失败' : 'Registration failed'));
     } finally {
       setLoading(false);
     }
