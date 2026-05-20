@@ -108,7 +108,7 @@ serve(async (req) => {
     });
 
     const subtotal = items.reduce(
-      (sum: number, item: any) => sum + item.price * item.quantity, 0
+      (sum: number, item: CartItem) => sum + item.price * item.quantity, 0
     );
     const shippingCost = subtotal >= 500 ? 0 : 25;
     // P0 FIX: Server re-derives discount from promo code string
@@ -156,7 +156,7 @@ serve(async (req) => {
       });
     }
 
-    const orderItems = items.map((item: any) => ({
+    const orderItems = items.map((item: CartItem) => ({
       order_id: order.id,
       product_id: item.productId || null,
       product_name: item.name,
@@ -168,7 +168,7 @@ serve(async (req) => {
 
     await serviceClient.from("order_items").insert(orderItems);
 
-    const lineItems: any[] = items.map((item: any) => ({
+    const lineItems: any[] = items.map((item: CartItem) => ({
       price_data: {
         currency: (currency || "nzd").toLowerCase(),
         product_data: {
@@ -191,7 +191,7 @@ serve(async (req) => {
       });
     }
 
-    const sessionParams: any = {
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
