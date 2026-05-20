@@ -116,7 +116,7 @@ export default function ShopPage() {
                   { labelZh: '送商务客户', labelEn: 'For Clients', slug: 'duvet-classic' },
                   { labelZh: '送新生儿家庭', labelEn: 'For Newborn', slug: 'duvet-newborn' },
                 ] as const).map(opt => {
-                  const product = dbProducts?.find((p: any) => p.slug === opt.slug);
+                  const product = dbProducts?.find(p => p.slug === opt.slug);
                   if (!product) return null;
                   return (
                     <Link
