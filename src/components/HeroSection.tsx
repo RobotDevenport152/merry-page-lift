@@ -260,7 +260,7 @@ export default function HeroSection() {
             <p className="text-primary-foreground/60 font-body text-sm">{t.process.subtitle}</p>
           </div>
           <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {t.process.steps.map((step: any, i: number) => (
+            {t.process.steps.map((step: { title: string; desc: string }, i: number) => (
               <div key={i} className="text-center">
                 <div className="w-12 h-12 rounded-full border border-gold/40 flex items-center justify-center mx-auto mb-4">
                   <span className="font-display text-gold text-lg font-semibold">{String(i + 1).padStart(2, '0')}</span>
