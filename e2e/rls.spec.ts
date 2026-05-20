@@ -69,7 +69,7 @@ test.describe('Grower RLS — fiber_batches isolation', () => {
     // If the query returns data, verify isolation
     if (result.data && Array.isArray(result.data) && result.data.length > 0) {
       const growerSession = await page.evaluate(async () => {
-        // @ts-expect-error
+        // @ts-expect-error -- dynamic import via Vite path
         const { supabase } = await import('/src/integrations/supabase/client.ts').catch(() => ({ supabase: null }));
         if (!supabase) return null;
         const { data } = await supabase.auth.getSession();
@@ -91,7 +91,7 @@ test.describe('Grower RLS — fiber_batches isolation', () => {
     await loginAs(page, 'regular');
 
     const result = await page.evaluate(async () => {
-      // @ts-expect-error
+      // @ts-expect-error -- dynamic import via Vite path
       const { supabase } = await import('/src/integrations/supabase/client.ts').catch(() => ({ supabase: null }));
       if (!supabase) return { data: null, error: 'supabase not accessible' };
 
