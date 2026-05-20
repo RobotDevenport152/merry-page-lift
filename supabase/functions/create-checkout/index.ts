@@ -168,7 +168,7 @@ serve(async (req) => {
 
     await serviceClient.from("order_items").insert(orderItems);
 
-    const lineItems: any[] = items.map((item: CartItem) => ({
+    const lineItems: StripeLineItem[] = items.map((item: CartItem) => ({
       price_data: {
         currency: (currency || "nzd").toLowerCase(),
         product_data: {
