@@ -40,7 +40,7 @@ export function dbToLegacyProduct(p: DbProduct) {
     nameZh: p.name_zh,
     descEn: p.description_en || '',
     descZh: p.description_zh || '',
-    category: p.category as 'bedding' | 'outerwear' | 'accessories',
+    category: p.category,
     prices: { NZD: Number(p.price_nzd), CNY: Number(p.price_cny), USD: Number(p.price_usd) } as Record<Currency, number>,
     image: p.image || '/placeholder.svg',
     images: p.images ?? [],
