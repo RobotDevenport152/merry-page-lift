@@ -26,8 +26,9 @@ export default function ForgotPasswordPage() {
       if (error) throw error;
       setSent(true);
       toast.success(locale === 'zh' ? '重置链接已发送到您的邮箱' : 'Reset link sent to your email');
-    } catch (err: any) {
-      toast.error(err.message || (locale === 'zh' ? '发送失败' : 'Failed to send'));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '';
+      toast.error(msg || (locale === 'zh' ? '发送失败' : 'Failed to send'));
     } finally {
       setLoading(false);
     }
