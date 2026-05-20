@@ -23,7 +23,7 @@ export default function WishlistPage() {
         .select('product_id, products(*)')
         .eq('user_id', user.id);
       if (data) {
-        setProducts(data.map((w: { products: DbProduct }) => dbToLegacyProduct(w.products)));
+        setProducts(data.map((w) => dbToLegacyProduct(w.products as unknown as DbProduct)));
       }
       setLoading(false);
     })();
