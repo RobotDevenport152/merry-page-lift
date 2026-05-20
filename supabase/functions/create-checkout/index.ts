@@ -37,6 +37,23 @@ function calculatePromoDiscount(code: string | null | undefined, subtotal: numbe
   return promo.discount;
 }
 
+interface CartItem {
+  productId?: string;
+  name: string;
+  variant?: string;
+  quantity: number;
+  price: number;
+}
+
+type StripeLineItem = {
+  price_data: {
+    currency: string;
+    product_data: { name: string; description?: string };
+    unit_amount: number;
+  };
+  quantity: number;
+};
+
 serve(async (req) => {
   const origin = req.headers.get("origin");
   const corsHeaders = getCorsHeaders(origin);
