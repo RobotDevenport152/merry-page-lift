@@ -39,7 +39,8 @@ export default function RegisterPage() {
       if (error) throw error;
       toast.success(locale === 'zh' ? '注册成功！请检查邮箱验证链接。' : 'Registration successful! Please check your email for verification.');
       navigate('/login');
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '';
       toast.error(err.message || (locale === 'zh' ? '注册失败' : 'Registration failed'));
     } finally {
       setLoading(false);
