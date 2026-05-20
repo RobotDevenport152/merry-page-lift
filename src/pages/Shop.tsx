@@ -258,7 +258,7 @@ export default function ShopPage() {
               </button>
               {dbProducts && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-xl mx-auto text-left">
-                  {dbProducts.filter((p: any) => p.featured).slice(0, 3).map((p: any) => (
+                  {dbProducts.filter(p => p.featured).slice(0, 3).map(p => (
                     <Link key={p.id} to={`/product/${p.id}`} className="group border border-border rounded-lg overflow-hidden hover:border-gold transition-colors">
                       <div className="aspect-square overflow-hidden bg-card">
                         <img src={p.image} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
