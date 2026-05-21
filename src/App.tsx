@@ -120,16 +120,31 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
+              <Route
+                path="/grower/dashboard"
+                element={
+                  <ProtectedRoute requiredRole="grower">
+                    <GrowerDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-              {/* P1 FIX: Admin route — require 'admin' role */}
+              {/* Admin — nested routes share AdminLayout */}
               <Route
                 path="/admin"
                 element={
                   <ProtectedRoute requiredRole="admin">
-                    <Admin />
+                    <AdminLayout />
                   </ProtectedRoute>
                 }
-              />
+              >
+                <Route index element={<AdminDashboard />} />
+                <Route path="products" element={<AdminProducts />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="promos" element={<AdminPromos />} />
+                <Route path="fiber-batches" element={<AdminFiberBatches />} />
+                <Route path="growers" element={<AdminGrowers />} />
+              </Route>
 
               <Route path="*" element={<NotFound />} />
             </Routes>
