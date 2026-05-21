@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/layout/Navbar';
 import { motion } from 'framer-motion';
 import { Check, Lock } from 'lucide-react';
 import { toast } from 'sonner';

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
-import Navbar from '@/components/Navbar';
-import CartDrawer from '@/components/CartDrawer';
+import Navbar from '@/components/layout/Navbar';
+import CartDrawer from '@/components/cart/CartDrawer';
 import { motion } from 'framer-motion';
 import { MapPin, Calendar, Scissors, Droplets, Wind, Sparkles, ShieldCheck, Package, Search, Share2, Copy, Check } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';

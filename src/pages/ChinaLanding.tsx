@@ -1,6 +1,6 @@
-import Navbar from '@/components/Navbar';
-import CartDrawer from '@/components/CartDrawer';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import CartDrawer from '@/components/cart/CartDrawer';
+import Footer from '@/components/layout/Footer';
 import { motion } from 'framer-motion';
 import { Trophy, Tv, Leaf, PawPrint, Thermometer, Feather, Droplets, Bug, Zap, MessageCircle, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';

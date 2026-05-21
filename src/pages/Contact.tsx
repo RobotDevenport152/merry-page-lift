@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
-import Navbar from '@/components/Navbar';
-import CartDrawer from '@/components/CartDrawer';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import CartDrawer from '@/components/cart/CartDrawer';
+import Footer from '@/components/layout/Footer';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MessageCircle, MapPin, Facebook, Youtube, Instagram } from 'lucide-react';
 import { toast } from 'sonner';

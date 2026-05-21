@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Thermometer, Feather, Droplets, Bug, Zap, ShoppingBag, Star, ArrowRight } from 'lucide-react';
-import GrowerNetworkSection from '@/components/GrowerNetworkSection';
-import Footer from '@/components/Footer';
-import { SleepQuizDialog } from '@/components/SleepQuizDialog';
+import GrowerNetworkSection from '@/components/home/GrowerNetworkSection';
+import Footer from '@/components/layout/Footer';
+import { SleepQuizDialog } from '@/components/shop/SleepQuizDialog';
 import { useFeaturedProducts } from '@/hooks/useProducts';
 import { Link } from 'react-router-dom';
 
