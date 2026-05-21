@@ -1,7 +1,7 @@
 import { useApp } from '@/contexts/AppContext';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import CartDrawer from '@/components/CartDrawer';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import CartDrawer from '@/components/cart/CartDrawer';
 import SEOHead from '@/components/SEOHead';
 import { Link } from 'react-router-dom';
 import { CheckCircle, Package, Mail, RefreshCw } from 'lucide-react';

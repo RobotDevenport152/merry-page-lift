@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/layout/Navbar';
 import { CheckCircle, MapPin, Clock, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 

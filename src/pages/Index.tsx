@@ -1,6 +1,6 @@
-import Navbar from '@/components/Navbar';
-import HeroSection from '@/components/HeroSection';
-import CartDrawer from '@/components/CartDrawer';
+import Navbar from '@/components/layout/Navbar';
+import HeroSection from '@/components/home/HeroSection';
+import CartDrawer from '@/components/cart/CartDrawer';
 import SEOHead from '@/components/SEOHead';
 import { useApp } from '@/contexts/AppContext';
 

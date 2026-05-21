@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { products } from '@/lib/store';
-import Navbar from '@/components/Navbar';
-import CartDrawer from '@/components/CartDrawer';
+import Navbar from '@/components/layout/Navbar';
+import CartDrawer from '@/components/cart/CartDrawer';
 import SEOHead from '@/components/SEOHead';
 import { Package, ShoppingCart, AlertTriangle, Users, BarChart3, Download, CheckSquare, TrendingUp, TrendingDown, type LucideIcon } from 'lucide-react';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts';

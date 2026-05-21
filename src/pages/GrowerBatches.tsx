@@ -5,9 +5,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useApp } from '@/contexts/AppContext';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
-import Navbar from '@/components/Navbar';
-import CartDrawer from '@/components/CartDrawer';
-import Footer from '@/components/Footer';
+import Navbar from '@/components/layout/Navbar';
+import CartDrawer from '@/components/cart/CartDrawer';
+import Footer from '@/components/layout/Footer';
 import SEOHead from '@/components/SEOHead';
 import { Download } from 'lucide-react';
 
