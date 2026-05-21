@@ -14,7 +14,15 @@ const ProductDetail = React.lazy(() => import("./pages/ProductDetail"));
 const Checkout = React.lazy(() => import("./pages/Checkout"));
 const OrderSuccess = React.lazy(() => import("./pages/OrderSuccess"));
 const Traceability = React.lazy(() => import("./pages/Traceability"));
-const Admin = React.lazy(() => import("./pages/Admin"));
+const AdminLayout = React.lazy(() => import("./pages/admin/AdminLayout"));
+const AdminDashboard = React.lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminProducts = React.lazy(() => import("./pages/admin/AdminProducts"));
+const AdminOrders = React.lazy(() => import("./pages/admin/AdminOrders"));
+const AdminPromos = React.lazy(() => import("./pages/admin/AdminPromos"));
+const AdminFiberBatches = React.lazy(() => import("./pages/admin/AdminFiberBatches"));
+const AdminGrowers = React.lazy(() => import("./pages/admin/AdminGrowers"));
+const AuthPage = React.lazy(() => import("./pages/AuthPage"));
+const GrowerDashboard = React.lazy(() => import("./pages/GrowerDashboard"));
 const Contact = React.lazy(() => import("./pages/Contact"));
 const GrowersInfo = React.lazy(() => import("./pages/GrowersInfo"));
 const Wholesale = React.lazy(() => import("./pages/Wholesale"));
@@ -67,6 +75,7 @@ const App = () => (
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/auth" element={<AuthPage />} />
 
               {/* P1 FIX: Auth-required routes — redirect to /login if not authenticated */}
               <Route
